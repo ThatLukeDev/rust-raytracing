@@ -16,3 +16,22 @@ impl<T: Copy + Mul<Output = T> + Add<Output = T> + From<f64> + Into<f64>> Ray<T>
         Ray::<T> { origin: origin, direction: direction.unit() }
     }
 }
+
+impl<T: Copy + Add<Output = T> + Mul<Output = T>> Ray<T> {
+    pub fn at<U: Into<T>>(&self, k: U) -> Vec3<T>{
+        self.origin + self.direction * k.into()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn ray_at() {
+        assert_eq!(
+            Ray::new(Vec3::new(1.0,2.0,3.0),Vec3::new(1.0,0.0,0.0)).at(0),
+            Vec3::new(1.0,2.0,3.0)
+        );
+    }
+}
