@@ -21,7 +21,8 @@ impl<T: fmt::Display> fmt::Display for Vec3<T> {
     }
 }
 
-impl<T: Add<Output = T>> Add for Vec3<T> {
+impl<T: Copy + Add<Output = T>> Add for Vec3<T>
+    where Self: Copy {
     type Output = Self;
 
     fn add(self, other: Self) -> Self {
@@ -33,7 +34,8 @@ impl<T: Add<Output = T>> Add for Vec3<T> {
     }
 }
 
-impl<T: Sub<Output = T>> Sub for Vec3<T> {
+impl<T: Copy + Sub<Output = T>> Sub for Vec3<T>
+    where Self: Copy {
     type Output = Self;
 
     fn sub(self, other: Self) -> Self {
@@ -45,7 +47,8 @@ impl<T: Sub<Output = T>> Sub for Vec3<T> {
     }
 }
 
-impl<T: Copy + Mul<Output = T>> Mul<T> for Vec3<T> {
+impl<T: Copy + Mul<Output = T>> Mul<T> for Vec3<T>
+    where Self: Copy {
     type Output = Self;
 
     fn mul(self, other: T) -> Self {
@@ -57,7 +60,8 @@ impl<T: Copy + Mul<Output = T>> Mul<T> for Vec3<T> {
     }
 }
 
-impl<T: Copy + Div<Output = T>> Div<T> for Vec3<T> {
+impl<T: Copy + Div<Output = T>> Div<T> for Vec3<T>
+    where Self: Copy {
     type Output = Self;
 
     fn div(self, other: T) -> Self {
@@ -69,7 +73,8 @@ impl<T: Copy + Div<Output = T>> Div<T> for Vec3<T> {
     }
 }
 
-impl<T: Mul<Output = T> + Add<Output = T>> Mul for Vec3<T> {
+impl<T: Copy + Mul<Output = T> + Add<Output = T>> Mul for Vec3<T>
+    where Self: Copy {
     type Output = T;
 
     fn mul(self, other: Self) -> T {
