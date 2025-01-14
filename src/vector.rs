@@ -15,6 +15,21 @@ impl<T> Vec3<T> {
     }
 }
 
+impl<T: Copy + Mul<Output = T> + Add<Output = T> + From<f64> + Into<f64>> Vec3<T>
+    where Self: Div<T, Output = Self> {
+    pub fn length_squared(&self) -> T {
+        self.x * self.x + self.y * self.y + self.z * self.z
+    }
+
+    pub fn length(&self) -> T {
+        self.length_squared().into().sqrt().into()
+    }
+
+    pub fn unit(&self) -> Self {
+        *self / self.length()
+    }
+}
+
 impl<T: fmt::Display> fmt::Display for Vec3<T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "({},{},{})", self.x, self.y, self.z)
@@ -131,5 +146,12 @@ mod tests {
         assert_eq!(Vec3::new(5,9,5) * Vec3::new(5,4,2), 71);
         assert_eq!(Vec3::new(7,8,5) * Vec3::new(3,3,3), 60);
         assert_eq!(Vec3::new(0,1,2) * Vec3::new(1,2,4), 10);
+    }
+
+    #[test]
+    fn unit_vec() {
+        assert_eq!(Vec3::new(2.0,0.0,0.0).unit(), Vec3::new(1.0,0.0,0.0));
+        assert_eq!(Vec3::new(0.0,5.0,0.0).unit(), Vec3::new(0.0,1.0,0.0));
+        assert_eq!(Vec3::new(0.0,0.0,4.0).unit(), Vec3::new(0.0,0.0,1.0));
     }
 }
