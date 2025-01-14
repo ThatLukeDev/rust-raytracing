@@ -1,8 +1,10 @@
 #[allow(dead_code)]
 
 mod vector;
+mod ray;
 
 use vector::Vec3;
+use ray::Ray;
 
 fn main() {
     let vec_a = Vec3::new(1.0, 2.0, 3.0);
