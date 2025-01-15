@@ -16,8 +16,20 @@ impl<T> Sphere<T> {
     }
 }
 
-impl<T: Copy + Add<Output = T> + Mul<Output = T> + Div<Output = T> + Sub<Output = T>> Raytrace<T> for Sphere<T> {
+impl<T: Ord + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output = T> + Div<Output = T> + Sub<Output = T>> Raytrace<T> for Sphere<T> {
     fn intersects_along(&self, ray: &Ray<T>) -> Option<T> {
-        todo!()
+        let offset = ray.origin - self.origin;
+
+        let a = ray.direction * ray.direction;
+        let b = ray.direction * offset * (2.0).into();
+        let c = offset * offset - self.radius * self.radius;
+
+        let discriminant = b * b - a * c * (4.0).into();
+
+        if discriminant < (0.0).into() {
+            return None;
+        }
+
+        Some( (b * (-1.0).into() - discriminant.into().sqrt().into()) / (a * (2.0).into()) )
     }
 }
