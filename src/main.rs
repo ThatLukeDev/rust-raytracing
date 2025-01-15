@@ -5,6 +5,7 @@ mod vector;
 mod ray;
 mod raytrace;
 mod sphere;
+mod color;
 mod scene;
 
 mod tests;
