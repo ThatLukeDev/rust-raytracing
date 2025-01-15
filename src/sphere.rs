@@ -16,7 +16,7 @@ impl<T> Sphere<T> {
     }
 }
 
-impl<T: Ord + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output = T> + Div<Output = T> + Sub<Output = T>> Raytrace<T> for Sphere<T> {
+impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output = T> + Div<Output = T> + Sub<Output = T>> Raytrace<T> for Sphere<T> {
     fn intersects_along(&self, ray: &Ray<T>) -> Option<T> {
         let offset = ray.origin - self.origin;
 
@@ -31,5 +31,46 @@ impl<T: Ord + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output = T> +
         }
 
         Some( (b * (-1.0).into() - discriminant.into().sqrt().into()) / (a * (2.0).into()) )
+    }
+
+    fn normal_from(&self, ray: &Ray<T>) -> Option<Vec3<T>> {
+        Some((ray.origin - self.origin).unit())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn raytrace_intersects() {
+        assert_eq!(
+            Sphere::new(Vec3::new(0.0, 2.0, 0.0), 1.0).intersects_at(&Ray::new(Vec3::new(0.0, 0.0, 0.0), Vec3::new(0.0, 1.0, 0.0))),
+            Some(Vec3::new(0.0, 1.0, 0.0))
+        );
+        assert_eq!(
+            Sphere::new(Vec3::new(6.0, 0.0, 8.0), 1.0).intersects_along(&Ray::new(Vec3::new(3.0, 0.0, 4.0), Vec3::new(3.0, 0.0, 4.0))),
+            Some(4.0)
+        );
+        assert_eq!(
+            Sphere::new(Vec3::new(6.0, 0.0, 8.0), 1.0).intersects_along(&Ray::new(Vec3::new(-3.0, 0.0, 4.0), Vec3::new(3.0, 0.0, 4.0))),
+            None
+        );
+    }
+
+    #[test]
+    fn raytrace_normal() {
+        assert_eq!(
+            Sphere::new(Vec3::new(1.0, 2.0, 3.0), 1.0).normal_from(&Ray::new(Vec3::new(1.0, 3.0, 3.0), Vec3::new(0.0, 0.0, 0.0))),
+            Some(Vec3::new(0.0, 1.0, 0.0))
+        );
+        assert_eq!(
+            Sphere::new(Vec3::new(1.0, 2.0, 3.0), 1.0).normal_from(&Ray::new(Vec3::new(2.0, 2.0, 3.0), Vec3::new(0.0, 0.0, 0.0))),
+            Some(Vec3::new(1.0, 0.0, 0.0))
+        );
+        assert_eq!(
+            Sphere::new(Vec3::new(1.0, 2.0, 3.0), 1.0).normal_from(&Ray::new(Vec3::new(0.0, 2.0, 3.0), Vec3::new(0.0, 0.0, 0.0))),
+            Some(Vec3::new(-1.0, 0.0, 0.0))
+        );
     }
 }
