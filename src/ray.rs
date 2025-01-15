@@ -22,16 +22,3 @@ impl<T: Copy + Add<Output = T> + Mul<Output = T>> Ray<T> {
         self.origin + self.direction * k.into()
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn ray_at() {
-        assert_eq!(
-            Ray::new(Vec3::new(1.0,2.0,3.0),Vec3::new(1.0,0.0,0.0)).at(0),
-            Vec3::new(1.0,2.0,3.0)
-        );
-    }
-}

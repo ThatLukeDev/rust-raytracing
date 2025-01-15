@@ -6,6 +6,8 @@ mod ray;
 mod raytrace;
 mod sphere;
 
+mod tests;
+
 use vector::Vec3;
 use ray::Ray;
 
