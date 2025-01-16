@@ -6,6 +6,7 @@ mod ray;
 mod raytrace;
 mod sphere;
 mod color;
+mod camera;
 mod scene;
 
 mod tests;
