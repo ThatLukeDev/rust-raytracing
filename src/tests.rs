@@ -96,15 +96,15 @@ mod sphere {
         #[test]
         fn normal() {
             assert_eq!(
-                Sphere::new(Vec3::new(1.0, 2.0, 3.0), 1.0).normal_from(&Ray::new(Vec3::new(1.0, 3.0, 3.0), Vec3::new(0.0, 0.0, 0.0))),
+                Sphere::new(Vec3::new(1.0, 2.0, 3.0), 1.0).normal_at(Vec3::new(1.0, 3.0, 3.0)),
                 Some(Vec3::new(0.0, 1.0, 0.0))
             );
             assert_eq!(
-                Sphere::new(Vec3::new(1.0, 2.0, 3.0), 1.0).normal_from(&Ray::new(Vec3::new(2.0, 2.0, 3.0), Vec3::new(0.0, 0.0, 0.0))),
+                Sphere::new(Vec3::new(1.0, 2.0, 3.0), 1.0).normal_at(Vec3::new(2.0, 2.0, 3.0)),
                 Some(Vec3::new(1.0, 0.0, 0.0))
             );
             assert_eq!(
-                Sphere::new(Vec3::new(1.0, 2.0, 3.0), 1.0).normal_from(&Ray::new(Vec3::new(0.0, 2.0, 3.0), Vec3::new(0.0, 0.0, 0.0))),
+                Sphere::new(Vec3::new(1.0, 2.0, 3.0), 1.0).normal_at(Vec3::new(0.0, 2.0, 3.0)),
                 Some(Vec3::new(-1.0, 0.0, 0.0))
             );
         }

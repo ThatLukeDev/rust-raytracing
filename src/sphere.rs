@@ -14,6 +14,11 @@ impl<T> Sphere<T> {
     pub fn new(origin: Vec3<T>, radius: T) -> Self {
         Sphere::<T> { origin, radius }
     }
+
+    pub fn normal_at(&self, &pos: &Vec3<T>) -> Vec3<T>
+        where T: Copy + Add<Output = T> + Mul<Output = T> + From<f64> + Into<f64> + Div<Output = T>, Vec3<T>: Copy + Sub<Output = Vec3<T>> {
+        (pos - self.origin).unit()
+    }
 }
 
 impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output = T> + Div<Output = T> + Sub<Output = T>> Raytrace<T> for Sphere<T> {
@@ -33,7 +38,10 @@ impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output
         Some( (b * (-1.0).into() - discriminant.into().sqrt().into()) / (a * (2.0).into()) )
     }
 
-    fn normal_from(&self, ray: &Ray<T>) -> Option<Vec3<T>> {
-        Some((ray.origin - self.origin).unit())
+    fn transmit(&self, ray: &Ray<T>) -> Option<Ray<T>> {
+        let pos: Vec3<T> = self.intersects_at(ray)?;
+        let normal: Vec3<T> = self.normal_at(&pos);
+
+        Some(Ray::new(pos, ray.direction - (normal * (normal * ray.direction) * T::from(2.0))))
     }
 }
