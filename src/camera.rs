@@ -3,23 +3,34 @@ use crate::Ray;
 
 use std::ops::*;
 
-struct Camera<T>(Ray<T>);
+struct Camera<T> {
+    position: Vec3<T>,
+    rotation: Vec3<T>,
+
+    direction: Vec3<T>,
+    up_direction: Vec3<T>,
+    right_direction: Vec3<T>,
+}
 
 impl<T: Copy> Camera<T> {
     pub fn new(position: Vec3<T>, rotation: Vec3<T>) -> Self {
         todo!();
-        Camera::<T> { 0: Ray::<T> {
-            origin: position,
-            direction: rotation,
-        } }
+        Camera::<T> {
+            position: position,
+            rotation: rotation,
+
+            direction: position, // todo
+            up_direction: position, // todo
+            right_direction: position // todo
+        }
     }
 
     pub fn ray(&self) -> Ray<T> {
-        self.0
+        Ray::<T> { origin: self.position, direction: self.direction }
     }
 
     pub fn transform(self, vec: Vec3<T>) -> Vec3<T>
     where T: Mul<Output = T> {
-        Vec3::<T> { x: self.ray().direction.x * vec.x, y: self.ray().direction.y * vec.y, z: self.ray().direction.z * vec.z }
+        todo!()
     }
 }
