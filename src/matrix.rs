@@ -1,5 +1,17 @@
 use std::ops::*;
 use std::fmt;
+use std::error;
+
+type Result<T> = std::result::Result<T, Box<dyn error::Error>>;
+
+#[derive(Debug, Clone)]
+struct SizeMismatch;
+
+impl fmt::Display for SizeMismatch {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "invalid size(s) for matrix")
+    }
+}
 
 #[derive(Debug, PartialEq)]
 pub struct Matrix<T: Copy> {
