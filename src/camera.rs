@@ -15,14 +15,6 @@ struct Camera<T> {
 impl<T: Copy> Camera<T> {
     pub fn new(position: Vec3<T>, rotation: Vec3<T>) -> Self {
         todo!();
-        Camera::<T> {
-            position: position,
-            rotation: rotation,
-
-            direction: position, // todo
-            up_direction: position, // todo
-            right_direction: position // todo
-        }
     }
 
     pub fn ray(&self) -> Ray<T> {

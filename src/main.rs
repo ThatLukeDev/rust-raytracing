@@ -1,5 +1,6 @@
 #![allow(dead_code)]
 #![allow(unused_imports)]
+#![allow(unused_variables)]
 
 mod vector;
 mod ray;
@@ -8,6 +9,7 @@ mod sphere;
 mod color;
 mod camera;
 mod scene;
+mod matrix;
 
 mod tests;
 
