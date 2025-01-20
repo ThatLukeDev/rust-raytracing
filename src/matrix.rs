@@ -18,6 +18,22 @@ impl<T: Copy + Add + Sub + Mul + Div> Matrix<T> {
             contents: vec![vec![0.into(); width]; height]
         }
     }
+
+    pub fn height(&self) -> usize {
+        self.height
+    }
+
+    pub fn width(&self) -> usize {
+        self.width
+    }
+
+    pub fn at(&self, m: usize, n: usize) -> &T {
+        &self.contents[m][n]
+    }
+
+    pub fn mut_at(&mut self, m: usize, n: usize) -> &T {
+        &mut self.contents[m][n]
+    }
 }
 
 impl<T: Copy + Add + Sub + Mul + Div> Index<usize> for Matrix<T> {
