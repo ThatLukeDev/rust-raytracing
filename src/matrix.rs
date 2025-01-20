@@ -1,11 +1,8 @@
 use std::ops::*;
 use std::fmt;
-use std::error;
-
-type Result<T> = std::result::Result<T, Box<dyn error::Error>>;
 
 #[derive(Debug, Clone)]
-struct SizeMismatch;
+pub struct SizeMismatch;
 
 impl fmt::Display for SizeMismatch {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -19,6 +16,16 @@ pub struct Matrix<T: Copy> {
     width: usize,
 
     contents: Vec<Vec<T>>
+}
+
+impl<T: Copy> Clone for Matrix<T> {
+    fn clone(&self) -> Self {
+        Matrix::<T> {
+            height: self.height,
+            width: self.width,
+            contents: self.contents.clone()
+        }
+    }
 }
 
 impl<T: Copy + Add + Sub + Mul + Div> Matrix<T> {
@@ -65,5 +72,20 @@ impl<T: Copy> IndexMut<usize> for Matrix<T> {
 impl<T: Copy> fmt::Display for Matrix<T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[ {} {} ]", self.height, self.width)
+    }
+}
+
+impl<T: Copy + Add> Add for Matrix<T> {
+    type Output = Result<Self, SizeMismatch>;
+
+    fn add(self, other: Self) -> Self::Output {
+        if self.width != other.width {
+            return Err(SizeMismatch);
+        }
+        if self.height != other.height {
+            return Err(SizeMismatch);
+        }
+
+        todo!()
     }
 }
