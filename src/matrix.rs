@@ -1,8 +1,8 @@
 use std::ops::*;
+use std::fmt;
 
 #[derive(Debug, PartialEq)]
-pub struct Matrix<T>
-    where T: Copy + Add + Sub + Mul + Div {
+pub struct Matrix<T: Copy> {
     height: usize,
     width: usize,
 
@@ -36,7 +36,7 @@ impl<T: Copy + Add + Sub + Mul + Div> Matrix<T> {
     }
 }
 
-impl<T: Copy + Add + Sub + Mul + Div> Index<usize> for Matrix<T> {
+impl<T: Copy> Index<usize> for Matrix<T> {
     type Output = Vec<T>;
 
     fn index<'a>(&'a self, i: usize) -> &'a Vec<T> {
@@ -44,8 +44,14 @@ impl<T: Copy + Add + Sub + Mul + Div> Index<usize> for Matrix<T> {
     }
 }
 
-impl<T: Copy + Add + Sub + Mul + Div> IndexMut<usize> for Matrix<T> {
+impl<T: Copy> IndexMut<usize> for Matrix<T> {
     fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut Vec<T> {
         &mut self.contents[i]
+    }
+}
+
+impl<T: Copy> fmt::Display for Matrix<T> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "[ {} {} ]", self.height, self.width)
     }
 }
