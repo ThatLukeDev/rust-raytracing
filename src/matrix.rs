@@ -18,6 +18,24 @@ pub struct Matrix<T: Copy> {
     contents: Vec<Vec<T>>
 }
 
+macro_rules! m_count_args { // recursive helper func
+    () => (0usize);
+    ( $x:tt $($x2:tt)* ) => (1usize + count!($($x2)*));
+}
+
+macro_rules! Matrix {
+    [ $( $($element:tt),* ;)* ] => {
+        Matrix::<T> {
+            width: count!( $($($element)*)* ),
+            height: count!( $($element)* ),
+
+            contents: Vec![
+                $( Vec![ $($element,)* ] )*
+            ]
+        }
+    }
+}
+
 impl<T: Copy> Clone for Matrix<T> {
     fn clone(&self) -> Self {
         Matrix::<T> {
