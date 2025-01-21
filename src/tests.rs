@@ -113,7 +113,17 @@ mod sphere {
 
 #[cfg(test)]
 mod matrix {
+    use crate::matrix::*;
+
     #[test]
     fn new() {
+        assert_eq!(
+            NewMatrix![
+                0, 0, 0;
+                0, 0, 0;
+                0, 0, 0;
+            ],
+            Matrix::new(3, 3)
+        );
     }
 }
