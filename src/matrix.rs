@@ -144,3 +144,25 @@ impl<T: Copy + Div<Output = T>> Div<T> for Matrix<T> {
         self
     }
 }
+
+impl<T: Copy + From<i32> + Sub + Div + Mul<Output = T> + Add<Output = T>> Mul for Matrix<T> {
+    type Output = Result<Self, SizeMismatch>;
+
+    fn mul(self, other: Self) -> Self::Output {
+        if self.width != other.height {
+            return Err(SizeMismatch);
+        }
+
+        let mut result = Matrix::new(self.height, other.width);
+
+        for i in 0..result.height {
+            for j in 0..result.width {
+                for k in 0..other.height {
+                    result[i][j] = result[i][j] + self[i][k] * other[k][i];
+                }
+            }
+        }
+
+        Ok(result)
+    }
+}
