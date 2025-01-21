@@ -75,10 +75,10 @@ impl<T: Copy> fmt::Display for Matrix<T> {
     }
 }
 
-impl<T: Copy + Add> Add for Matrix<T> {
+impl<T: Copy + Add<Output = T>> Add for Matrix<T> {
     type Output = Result<Self, SizeMismatch>;
 
-    fn add(self, other: Self) -> Self::Output {
+    fn add(mut self, other: Self) -> Self::Output {
         if self.width != other.width {
             return Err(SizeMismatch);
         }
@@ -86,6 +86,61 @@ impl<T: Copy + Add> Add for Matrix<T> {
             return Err(SizeMismatch);
         }
 
-        todo!()
+        for i in 0..self.height {
+            for j in 0..self.width {
+                self[i][j] = self[i][j] + other[i][j];
+            }
+        }
+
+        Ok(self)
+    }
+}
+
+impl<T: Copy + Sub<Output = T>> Sub for Matrix<T> {
+    type Output = Result<Self, SizeMismatch>;
+
+    fn sub(mut self, other: Self) -> Self::Output {
+        if self.width != other.width {
+            return Err(SizeMismatch);
+        }
+        if self.height != other.height {
+            return Err(SizeMismatch);
+        }
+
+        for i in 0..self.height {
+            for j in 0..self.width {
+                self[i][j] = self[i][j] - other[i][j];
+            }
+        }
+
+        Ok(self)
+    }
+}
+
+impl<T: Copy + Mul<Output = T>> Mul<T> for Matrix<T> {
+    type Output = Self;
+
+    fn mul(mut self, other: T) -> Self::Output {
+        for i in 0..self.height {
+            for j in 0..self.width {
+                self[i][j] = self[i][j] * other;
+            }
+        }
+
+        self
+    }
+}
+
+impl<T: Copy + Div<Output = T>> Div<T> for Matrix<T> {
+    type Output = Self;
+
+    fn div(mut self, other: T) -> Self::Output {
+        for i in 0..self.height {
+            for j in 0..self.width {
+                self[i][j] = self[i][j] / other;
+            }
+        }
+
+        self
     }
 }
