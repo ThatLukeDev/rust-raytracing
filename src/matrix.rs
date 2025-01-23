@@ -30,14 +30,21 @@ macro_rules! count_expr { // recursive helper func
     ($($x:expr),+; $($($y:expr),+);+) => (1usize + count_expr!($($($y),+);+));
 }
 
+macro_rules! count_expr_args { // recursive helper func
+    () => (0usize);
+    ($($x:expr),+) => (count_args!($($x),+));
+    ($($x:expr),+; $($($y:expr),+);+) => (count_args!($($x),+) + count_expr!($($($y),+);+));
+}
+
 pub(crate) use count_args;
 pub(crate) use count_expr;
+pub(crate) use count_expr_args;
 
 macro_rules! matrix {
-    ( $($($element:expr),+ $(,)?);+ $(;)? ) => {
+    ( $($($element:expr),+);+ ) => {
         Matrix {
-            width: count_args!( $($($element),+)+ ) / count_expr!( $($($element)+);+ ),
-            height: count_expr!( $($($element)+);+ ),
+            width: count_expr_args!( $($($element),+);+ ) / count_expr!( $($($element),+);+ ),
+            height: count_expr!( $($($element),+);+ ),
 
             contents: vec![
                 $( vec![ $($element),* ] )*

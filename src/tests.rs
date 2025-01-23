@@ -127,20 +127,18 @@ mod matrix {
         assert_eq!(count_expr!(), 0);
         assert_eq!(count_expr!(1+1), 1);
         assert_eq!(count_expr!(4, 3; 2, 3, 4), 2);
-        assert_eq!(count_expr!(4, 3; 2, 3, 4), 2);
+        assert_eq!(count_expr!(4, 3; 2, 3; 4), 3);
     }
 
     #[test]
     fn new() {
-        /*
         assert_eq!(
             matrix![
                 0, 0, 0;
                 0, 0, 0;
-                0, 0, 0;
+                0, 0, 0
             ],
             Matrix::new(3, 3)
         );
-        */
     }
 }
