@@ -12,10 +12,10 @@ impl fmt::Display for SizeMismatch {
 
 #[derive(Debug, PartialEq)]
 pub struct Matrix<T: Copy> {
-    height: usize,
-    width: usize,
+    pub height: usize,
+    pub width: usize,
 
-    contents: Vec<Vec<T>>
+    pub contents: Vec<Vec<T>>
 }
 
 macro_rules! count_args { // recursive helper func
@@ -36,9 +36,16 @@ macro_rules! count_expr_args { // recursive helper func
     ($($x:expr),+; $($($y:expr),+);+) => (count_args!($($x),+) + count_expr!($($($y),+);+));
 }
 
+macro_rules! wrap_in_vec { // recursive helper func
+    () => (0usize);
+    ($($x:expr),+) => (vec!($($x),+));
+    ($($x:expr),+; $($($y:expr),+);+) => (vec!($($x),+), wrap_in_vec!($($($y),+);+));
+}
+
 pub(crate) use count_args;
 pub(crate) use count_expr;
 pub(crate) use count_expr_args;
+pub(crate) use wrap_in_vec;
 
 macro_rules! matrix {
     ( $($($element:expr),+);+ ) => {
@@ -46,9 +53,7 @@ macro_rules! matrix {
             width: count_expr_args!( $($($element),+);+ ) / count_expr!( $($($element),+);+ ),
             height: count_expr!( $($($element),+);+ ),
 
-            contents: vec![
-                $( vec![ $($element),* ] )*
-            ]
+            contents: [wrap_in_vec!($($($element),+);+)].to_vec()
         }
     }
 }
