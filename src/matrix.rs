@@ -42,6 +42,16 @@ macro_rules! wrap_in_vec { // recursive helper func
     ($($x:expr),+; $($($y:expr),+);+) => (vec!($($x),+), wrap_in_vec!($($($y),+);+));
 }
 
+macro_rules! dvrmat {
+    ($($x:expr),+) => {
+        vec!($($x),+)
+    };
+
+    ($($x:expr),+; $($($y:expr),+);+ $(;)?) => {
+        vec!(vec!($($x),+), matrix!($($($y),+);+)).concat()
+    };
+}
+
 pub(crate) use count_args;
 pub(crate) use count_expr;
 pub(crate) use count_expr_args;
