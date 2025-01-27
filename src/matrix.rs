@@ -18,12 +18,18 @@ pub struct Matrix<T> {
     pub contents: Vec<Vec<T>>
 }
 
-impl<T: PartialEq> PartialEq for Matrix<T> {
+impl<T: PartialEq + Copy> PartialEq for Matrix<T> {
     fn eq(&self, other: &Matrix<T>) -> bool {
         if self.width != other.width {
             return false;
         }
         if self.height != other.height {
+            return false;
+        }
+        if self.contents.len() != self.height {
+            return false;
+        }
+        if other.contents.len() != self.height {
             return false;
         }
 
@@ -114,11 +120,11 @@ impl<T: Copy + Add + Sub + Mul + Div> Matrix<T> {
     }
 
     pub fn at(&self, m: usize, n: usize) -> &T {
-        &self.contents[m][n]
+        &self.contents[m-1][n-1]
     }
 
     pub fn mut_at(&mut self, m: usize, n: usize) -> &T {
-        &mut self.contents[m][n]
+        &mut self.contents[m-1][n-1]
     }
 }
 

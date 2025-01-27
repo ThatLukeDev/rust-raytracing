@@ -132,30 +132,46 @@ mod matrix {
 
     #[test]
     fn new() {
-        {
-            assert_eq!(
-                matrix![
-                    0, 0, 0;
-                    0, 0, 0;
-                    0, 0, 0;
-                ],
-                Matrix::new(3, 3)
-            );
-            assert_eq!(
-                matrix![
-                    0, 0;
-                    0, 0;
-                    0, 0;
-                ],
-                Matrix::new(3, 2)
-            );
-            assert_eq!(
-                matrix![
-                    0, 0, 0;
-                    0, 0, 0;
-                ],
-                Matrix::new(2, 3)
-            );
-        }
+        assert_eq!(
+            matrix![
+                0, 0, 0;
+                0, 0, 0;
+                0, 0, 0;
+            ],
+            Matrix::new(3, 3)
+        );
+        assert_eq!(
+            matrix![
+                0, 0;
+                0, 0;
+                0, 0;
+            ],
+            Matrix::new(3, 2)
+        );
+        assert_eq!(
+            matrix![
+                0, 0, 0;
+                0, 0, 0;
+            ],
+            Matrix::new(2, 3)
+        );
+    }
+
+    #[test]
+    fn at() {
+        assert_eq!(
+            *matrix![
+                0, 2, 0;
+                0, 0, 4;
+            ].at(2, 3),
+            4
+        );
+        assert_eq!(
+            *matrix![
+                0, 2, 0;
+                0, 0, 4;
+            ].at(1, 2),
+            2
+        );
     }
 }
