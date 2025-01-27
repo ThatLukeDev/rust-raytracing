@@ -136,7 +136,7 @@ mod matrix {
             let mat1: Matrix<i32> = matrix![
                 0, 0, 0;
                 0, 0, 0;
-                0, 0, 0
+                0, 0, 0;
             ];
             let mat2: Matrix<i32> = Matrix::new(3, 3);
 

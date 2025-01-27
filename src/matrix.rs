@@ -33,7 +33,7 @@ macro_rules! count_expr { // recursive helper func
 macro_rules! count_expr_args { // recursive helper func
     () => (0usize);
     ($($x:expr),+) => (count_args!($($x),+));
-    ($($x:expr),+; $($($y:expr),+);+) => (count_args!($($x),+) + count_expr!($($($y),+);+));
+    ($($x:expr),+; $($($y:expr),+);+ $(;)?) => (count_args!($($x),+) + count_expr_args!($($($y),+);+));
 }
 
 macro_rules! wrap_in_vec {
@@ -52,9 +52,9 @@ pub(crate) use count_expr_args;
 pub(crate) use wrap_in_vec;
 
 macro_rules! matrix {
-    ( $($($element:expr),+);+ ) => {
+    ( $($($element:expr),+);+ $(;)? ) => {
         Matrix {
-            width: count_expr_args!( $($($element),+);+ ),
+            width: count_expr_args!( $($($element),+);+ ) / count_expr!( $($($element),+);+ ),
             height: count_expr!( $($($element),+);+ ),
 
             contents: wrap_in_vec!($($($element),+);+)
