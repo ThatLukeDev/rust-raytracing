@@ -258,4 +258,68 @@ mod matrix {
             ]
         );
     }
+
+    #[test]
+    fn mul() {
+        assert_eq!(
+            (matrix![
+                1, 2;
+                3, 4;
+                5, 6;
+            ] * matrix![
+                1, 0;
+                0, 1;
+            ]).unwrap(),
+            matrix![
+                1, 2;
+                3, 4;
+                5, 6;
+            ]
+        );
+        assert_eq!(
+            (matrix![
+                1, 2, 7;
+                3, 4, 8;
+                5, 6, 9;
+            ] * matrix![
+                1, 0, 0;
+                0, 1, 0;
+                0, 0, 1;
+            ]).unwrap(),
+            matrix![
+                1, 2, 7;
+                3, 4, 8;
+                5, 6, 9;
+            ]
+        );
+        assert_eq!(
+            (matrix![
+                1, 2;
+                3, 4;
+                5, 6;
+            ] * matrix![
+                1, 0;
+                1, 1;
+            ]).unwrap(),
+            matrix![
+                3, 2;
+                7, 4;
+                11, 6;
+            ]
+        );
+    }
+
+    #[test]
+    #[should_panic]
+    fn mul_mismatch() {
+        (matrix![
+            1, 2;
+            4, 5;
+            7, 8;
+        ] * matrix![
+            1, 2;
+            4, 5;
+            7, 8;
+        ]).unwrap();
+    }
 }

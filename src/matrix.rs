@@ -231,7 +231,7 @@ impl<T: Copy + From<i32> + Sub + Div + Mul<Output = T> + Add<Output = T>> Mul fo
         for i in 0..result.height {
             for j in 0..result.width {
                 for k in 0..other.height {
-                    result[i][j] = result[i][j] + self[i][k] * other[k][i];
+                    result[i][j] = result[i][j] + self[i][k] * other[k][j];
                 }
             }
         }
