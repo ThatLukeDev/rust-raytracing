@@ -133,14 +133,29 @@ mod matrix {
     #[test]
     fn new() {
         {
-            let mat1: Matrix<i32> = matrix![
-                0, 0, 0;
-                0, 0, 0;
-                0, 0, 0;
-            ];
-            let mat2: Matrix<i32> = Matrix::new(3, 3);
-
-            assert_eq!(mat1, mat2);
+            assert_eq!(
+                matrix![
+                    0, 0, 0;
+                    0, 0, 0;
+                    0, 0, 0;
+                ],
+                Matrix::new(3, 3)
+            );
+            assert_eq!(
+                matrix![
+                    0, 0;
+                    0, 0;
+                    0, 0;
+                ],
+                Matrix::new(3, 2)
+            );
+            assert_eq!(
+                matrix![
+                    0, 0, 0;
+                    0, 0, 0;
+                ],
+                Matrix::new(2, 3)
+            );
         }
     }
 }

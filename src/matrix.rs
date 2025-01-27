@@ -10,12 +10,33 @@ impl fmt::Display for SizeMismatch {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug)]
 pub struct Matrix<T> {
     pub height: usize,
     pub width: usize,
 
     pub contents: Vec<Vec<T>>
+}
+
+impl<T: PartialEq> PartialEq for Matrix<T> {
+    fn eq(&self, other: &Matrix<T>) -> bool {
+        if self.width != other.width {
+            return false;
+        }
+        if self.height != other.height {
+            return false;
+        }
+
+        for i in 0..self.height {
+            for j in 0..self.width {
+                if self[i][j] != other[i][j] {
+                    return false;
+                }
+            }
+        }
+
+        true
+    }
 }
 
 macro_rules! count_args { // recursive helper func
