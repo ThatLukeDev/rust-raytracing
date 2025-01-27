@@ -174,4 +174,88 @@ mod matrix {
             2
         );
     }
+
+    #[test]
+    fn add() {
+        assert_eq!(
+            (matrix![
+                1, 2, 3;
+                4, 5, 6;
+            ] + matrix![
+                1, 3, 5;
+                2, 4, 6;
+            ]).unwrap(),
+            matrix![
+                2, 5, 8;
+                6, 9, 12;
+            ]
+        );
+    }
+
+    #[test]
+    #[should_panic]
+    fn add_mismatch() {
+        (matrix![
+            1, 2;
+            4, 5;
+            7, 8;
+        ] + matrix![
+            1, 3, 5;
+            2, 4, 6;
+        ]).unwrap();
+    }
+
+    #[test]
+    fn sub() {
+        assert_eq!(
+            (matrix![
+                1, 2, 3;
+                4, 5, 6;
+            ] - matrix![
+                1, 3, 5;
+                2, 4, 6;
+            ]).unwrap(),
+            matrix![
+                0, -1, -2;
+                2, 1, 0;
+            ]
+        );
+    }
+
+    #[test]
+    #[should_panic]
+    fn sub_mismatch() {
+        (matrix![
+            1, 2;
+            4, 5;
+            7, 8;
+        ] - matrix![
+            1, 3, 5;
+            2, 4, 6;
+        ]).unwrap();
+    }
+
+    #[test]
+    fn scale() {
+        assert_eq!(
+            matrix![
+                1, 2, 3;
+                4, 5, 6;
+            ] * 2,
+            matrix![
+                2, 4, 6;
+                8, 10, 12;
+            ]
+        );
+        assert_eq!(
+            matrix![
+                1, 2, 4;
+                4, 8, 6;
+            ] / 2,
+            matrix![
+                0, 1, 2;
+                2, 4, 3;
+            ]
+        );
+    }
 }
