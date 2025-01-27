@@ -239,3 +239,17 @@ impl<T: Copy + From<i32> + Sub + Div + Mul<Output = T> + Add<Output = T>> Mul fo
         Ok(result)
     }
 }
+
+impl<T: Copy + Add + Sub + Mul + Div + From<i32>> Matrix<T> {
+    pub fn transpose(&self) -> Self {
+        let mut result = Matrix::new(self.width, self.height);
+
+        for i in 0..self.height {
+            for j in 0..self.width {
+                result[j][i] = self[i][j];
+            }
+        }
+
+        result
+    }
+}

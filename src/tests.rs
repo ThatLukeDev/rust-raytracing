@@ -322,4 +322,19 @@ mod matrix {
             7, 8;
         ]).unwrap();
     }
+
+    #[test]
+    fn transpose() {
+        assert_eq!(
+            matrix![
+                1, 2;
+                3, 4;
+                5, 6;
+            ].transpose(),
+            matrix![
+                1, 3, 5;
+                2, 4, 6;
+            ]
+        );
+    }
 }
