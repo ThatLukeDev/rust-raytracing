@@ -2,6 +2,8 @@ use std::fmt;
 
 use std::ops::*;
 
+use crate::matrix::*;
+
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Vec3<T> {
     pub x: T,
@@ -12,6 +14,34 @@ pub struct Vec3<T> {
 impl<T> Vec3<T> {
     pub fn new(x: T, y: T, z: T) -> Self {
         Vec3::<T> { x, y, z }
+    }
+}
+
+#[derive(Debug)]
+pub struct SizeError;
+
+impl<T: Copy> TryFrom<Vec<T>> for Vec3<T> {
+    type Error = SizeError;
+
+    fn try_from(val: Vec<T>) -> Result<Self, SizeError> {
+        match val.len() {
+            3 => Ok(Vec3::<T> { x: val[0], y: val[1], z: val[2] }),
+            _ => Err(SizeError)
+        }
+    }
+}
+
+impl<T: Copy> TryFrom<Matrix<T>> for Vec3<T> {
+    type Error = SizeError;
+
+    fn try_from(val: Matrix<T>) -> Result<Self, SizeError> {
+        if val.width != 1 {
+            return Err(SizeError);
+        }
+        match val.height {
+            3 => Ok(Vec3::<T> { x: val[0][0], y: val[1][0], z: val[2][0] }),
+            _ => Err(SizeError)
+        }
     }
 }
 
