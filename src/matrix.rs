@@ -274,18 +274,22 @@ impl<T: Copy + Add<Output = T> + Sub + Mul<Output = T> + Div + From<i32>> Matrix
 
         let mut working_i = 0;
         for i in 0..self.height {
-            if i != m - 1 {
-                working_i += 1;
+            if i == m - 1 {
+                continue;
             }
 
             let mut working_j = 0;
             for j in 0..self.width {
-                if j != n - 1 {
-                    working_j += 1;
+                if j == n - 1 {
+                    continue;
                 }
 
                 result[working_i][working_j] = self[i][j];
+
+                working_j += 1;
             }
+
+            working_i += 1;
         }
 
         result
