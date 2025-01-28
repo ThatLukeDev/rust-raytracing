@@ -341,21 +341,21 @@ mod matrix {
     #[test]
     fn cofactor() {
         assert_eq!(
-            matrix![
+            *matrix![
                 1, 2;
                 3, 4;
-            ].cofactor(),
+            ].cofactors(),
             matrix![
                 1, -2;
                 -3, 4;
             ]
         );
         assert_eq!(
-            matrix![
+            *matrix![
                 1, 2;
                 3, 4;
                 5, 6;
-            ].cofactor(),
+            ].cofactors(),
             matrix![
                 1, -2;
                 -3, 4;

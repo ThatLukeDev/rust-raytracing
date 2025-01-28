@@ -255,7 +255,7 @@ impl<T: Copy + Add + Sub + Mul + Div + From<i32>> Matrix<T> {
 }
 
 impl<T: Copy + Add + Sub + Mul<Output = T> + Div + From<i32>> Matrix<T> {
-    pub fn cofactor(mut self) -> Self {
+    pub fn cofactors(&mut self) -> &Self {
         for i in 0..self.height {
             for j in 0..self.width {
                 if i % 2 + j % 2 == 1 { // either or
@@ -265,5 +265,15 @@ impl<T: Copy + Add + Sub + Mul<Output = T> + Div + From<i32>> Matrix<T> {
         }
 
         self
+    }
+}
+
+impl<T: Copy + Add<Output = T> + Sub + Mul<Output = T> + Div + From<i32>> Matrix<T> {
+    pub fn minors(&self) -> Self {
+        let mut result = Matrix::new(self.height, self.width);
+
+        todo!();
+
+        result
     }
 }
