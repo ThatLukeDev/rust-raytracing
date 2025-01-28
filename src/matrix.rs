@@ -269,11 +269,48 @@ impl<T: Copy + Add + Sub + Mul<Output = T> + Div + From<i32>> Matrix<T> {
 }
 
 impl<T: Copy + Add<Output = T> + Sub + Mul<Output = T> + Div + From<i32>> Matrix<T> {
-    pub fn minors(&self) -> Self {
-        let mut result = Matrix::new(self.height, self.width);
+    pub fn minor(&self, m: usize, n: usize) -> Self {
+        let mut result = Matrix::new(self.height - 1, self.width - 1);
 
-        todo!();
+        let mut working_i = 0;
+        for i in 0..self.height {
+            if i != m - 1 {
+                working_i += 1;
+            }
+
+            let mut working_j = 0;
+            for j in 0..self.width {
+                if j != n - 1 {
+                    working_j += 1;
+                }
+
+                result[working_i][working_j] = self[i][j];
+            }
+        }
 
         result
+    }
+
+    pub fn det(&self) -> Result<Self, SizeMismatch> {
+        if self.height != self.width {
+            return Err(SizeMismatch);
+        }
+
+        todo!()
+    }
+
+    pub fn minors(&self) -> Result<Self, SizeMismatch> {
+        if self.height != self.width {
+            return Err(SizeMismatch);
+        }
+
+        let mut result = Matrix::new(self.height, self.width);
+
+        for i in 0..self.height {
+            for j in 0..self.width {
+            }
+        }
+
+        Ok(result)
     }
 }

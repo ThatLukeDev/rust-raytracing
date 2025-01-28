@@ -363,4 +363,17 @@ mod matrix {
             ]
         );
     }
+
+    #[test]
+    fn minor() {
+        assert_eq!(
+            matrix![
+                1, 2;
+                3, 4;
+            ].minor(1, 2),
+            matrix![
+                3;
+            ]
+        );
+    }
 }
