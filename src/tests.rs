@@ -413,4 +413,20 @@ mod matrix {
             -12
         );
     }
+
+    #[test]
+    fn minors() {
+        assert_eq!(
+            matrix![
+                1, 2, 3;
+                3, 2, 1;
+                2, 1, 3;
+            ].minors().unwrap(),
+            matrix![
+                5, 7, -1;
+                3, -3, -3;
+                -4, -8, -4;
+            ]
+        );
+    }
 }
