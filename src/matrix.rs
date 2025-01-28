@@ -307,7 +307,7 @@ impl<T: Copy + Add<Output = T> + Sub + Mul<Output = T> + Div + From<i32>> Matrix
         let mut det: T = (0).into();
 
         for i in 0..self.width {
-            det = det + self.minor(1, i + 1).det().unwrap() * (((i as i32 + 1) % 2) * 2 - 1).into(); // cofactors
+            det = det + self.minor(1, i + 1).det().unwrap() * (((i as i32 + 1) % 2) * 2 - 1).into() * self[0][i]; // cofactors
         }
 
         Ok(det)
