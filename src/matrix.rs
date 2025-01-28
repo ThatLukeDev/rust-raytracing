@@ -295,12 +295,22 @@ impl<T: Copy + Add<Output = T> + Sub + Mul<Output = T> + Div + From<i32>> Matrix
         result
     }
 
-    pub fn det(&self) -> Result<Self, SizeMismatch> {
+    pub fn det(&self) -> Result<T, SizeMismatch> {
         if self.height != self.width {
             return Err(SizeMismatch);
         }
 
-        todo!()
+        if self.height == 1 {
+            return Ok(self[0][0]);
+        }
+
+        let mut det: T = (0).into();
+
+        for i in 0..self.width {
+            det = det + self.minor(1, i + 1).det().unwrap() * (((i as i32 + 1) % 2) * 2 - 1).into(); // cofactors
+        }
+
+        Ok(det)
     }
 
     pub fn minors(&self) -> Result<Self, SizeMismatch> {
@@ -312,6 +322,7 @@ impl<T: Copy + Add<Output = T> + Sub + Mul<Output = T> + Div + From<i32>> Matrix
 
         for i in 0..self.height {
             for j in 0..self.width {
+                result[i][j] = self.minor(i + 1, j + 1).det()?;
             }
         }
 
