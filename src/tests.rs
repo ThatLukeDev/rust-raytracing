@@ -341,7 +341,7 @@ mod matrix {
     #[test]
     fn cofactor() {
         assert_eq!(
-            *matrix![
+            matrix![
                 1, 2;
                 3, 4;
             ].cofactors(),
@@ -351,7 +351,7 @@ mod matrix {
             ]
         );
         assert_eq!(
-            *matrix![
+            matrix![
                 1, 2;
                 3, 4;
                 5, 6;
@@ -426,6 +426,34 @@ mod matrix {
                 5, 7, -1;
                 3, -3, -3;
                 -4, -8, -4;
+            ]
+        );
+    }
+
+    #[test]
+    fn inverse() {
+        assert_eq!(
+            matrix![
+                1, 0, 0;
+                0, 1, 0;
+                0, 0, 1;
+            ].inverse().unwrap(),
+            matrix![
+                1, 0, 0;
+                0, 1, 0;
+                0, 0, 1;
+            ]
+        );
+        assert_eq!(
+            matrix![
+                1, 1, 1;
+                1, 2, -3;
+                1, -3, 18;
+            ].inverse().unwrap(),
+            matrix![
+                27, -21, -5;
+                -21, 17, 4;
+                -5, 4, 1;
             ]
         );
     }

@@ -255,7 +255,7 @@ impl<T: Copy + Add + Sub + Mul + Div + From<i32>> Matrix<T> {
 }
 
 impl<T: Copy + Add + Sub + Mul<Output = T> + Div + From<i32>> Matrix<T> {
-    pub fn cofactors(&mut self) -> &Self {
+    pub fn cofactors(mut self) -> Self {
         for i in 0..self.height {
             for j in 0..self.width {
                 if i % 2 + j % 2 == 1 { // either or
@@ -325,6 +325,17 @@ impl<T: Copy + Add<Output = T> + Sub + Mul<Output = T> + Div + From<i32>> Matrix
                 result[i][j] = self.minor(i + 1, j + 1).det()?;
             }
         }
+
+        Ok(result)
+    }
+
+    pub fn inverse(&self) -> Result<Self, SizeMismatch>
+        where Matrix<T>: Div<T, Output = Matrix<T>> {
+        if self.height != self.width {
+            return Err(SizeMismatch);
+        }
+
+        let result = self.minors()?.cofactors() / self.det()?;
 
         Ok(result)
     }
