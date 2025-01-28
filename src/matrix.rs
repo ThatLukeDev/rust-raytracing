@@ -253,3 +253,17 @@ impl<T: Copy + Add + Sub + Mul + Div + From<i32>> Matrix<T> {
         result
     }
 }
+
+impl<T: Copy + Add + Sub + Mul<Output = T> + Div + From<i32>> Matrix<T> {
+    pub fn cofactor(mut self) -> Self {
+        for i in 0..self.height {
+            for j in 0..self.width {
+                if i % 2 + j % 2 == 1 { // either or
+                    self[i][j] = self[i][j] * (-1).into();
+                }
+            }
+        }
+
+        self
+    }
+}
