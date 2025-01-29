@@ -111,6 +111,21 @@ impl<T: Copy + Add + Sub + Mul + Div> Matrix<T> {
         }
     }
 
+    pub fn ident(height: usize) -> Self
+        where T: From<i32> {
+        let mut result = Matrix::<T> {
+            width: height,
+            height: height,
+            contents: vec![vec![0.into(); height]; height]
+        };
+
+        for i in 0..height {
+            result[i][i] = 1.into();
+        }
+
+        result
+    }
+
     pub fn height(&self) -> usize {
         self.height
     }

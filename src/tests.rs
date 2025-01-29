@@ -485,5 +485,10 @@ mod camera {
             rotright.transform(Vec3::new(1.0, 2.0, 3.0)),
             Vec3::new(3.0, 2.0, -1.0)
         );
+
+        assert_eq!(
+            Camera::new(Vec3::new(1.0, 2.0, 3.0), Vec3::new(0.0, 0.0, 0.0)).transform(Vec3::new(1.0, 2.0, 3.0)),
+            Vec3::new(1.0, 2.0, 3.0)
+        );
     }
 }

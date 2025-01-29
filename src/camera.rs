@@ -15,7 +15,7 @@ impl<T: Copy + Add + Sub + Mul + Div> Camera<T> {
         Camera::<T> {
             position: position,
 
-            rotation: Matrix::new(3, 3)
+            rotation: Matrix::ident(3)
         }
     }
 
