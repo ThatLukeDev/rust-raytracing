@@ -17,6 +17,16 @@ impl<T> Vec3<T> {
     }
 }
 
+impl<T: From<f64> + Into<f64> + Add<Output = T>> Vec3<T> {
+    pub fn round(self) -> Self {
+        Vec3::new(
+            <T as Into<f64>>::into(self.x + 0.5.into()).floor().into(),
+            <T as Into<f64>>::into(self.y + 0.5.into()).floor().into(),
+            <T as Into<f64>>::into(self.z + 0.5.into()).floor().into()
+        )
+    }
+}
+
 #[derive(Debug)]
 pub struct SizeError;
 
