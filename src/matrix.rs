@@ -1,6 +1,8 @@
 use std::ops::*;
 use std::fmt;
 
+use crate::Vec3;
+
 #[derive(Debug, Clone)]
 pub struct SizeMismatch;
 
@@ -140,6 +142,19 @@ impl<T: Copy + Add + Sub + Mul + Div> Matrix<T> {
 
     pub fn mut_at(&mut self, m: usize, n: usize) -> &T {
         &mut self.contents[m-1][n-1]
+    }
+}
+
+impl<T: Copy + From<f64> + Into<f64>> From<Vec3<T>> for Matrix<T> {
+    fn from(val: Vec3<T>) -> Self {
+        let sinx: T = <T as Into<f64>>::into(val.x).to_radians().sin().into();
+        let cosx: T = <T as Into<f64>>::into(val.x).to_radians().cos().into();
+        let siny: T = <T as Into<f64>>::into(val.y).to_radians().sin().into();
+        let cosy: T = <T as Into<f64>>::into(val.y).to_radians().cos().into();
+        let sinz: T = <T as Into<f64>>::into(val.z).to_radians().sin().into();
+        let cosz: T = <T as Into<f64>>::into(val.z).to_radians().cos().into();
+
+        todo!()
     }
 }
 
