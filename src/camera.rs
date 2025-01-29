@@ -11,11 +11,11 @@ pub struct Camera<T> {
 
 impl<T: Copy + Add + Sub + Mul + Div> Camera<T> {
     pub fn new(position: Vec3<T>, rotation: Vec3<T>) -> Self
-        where T: From<i32> {
+        where T: From<i32>, Vec3<T>: Into<Matrix<T>> {
         Camera::<T> {
             position: position,
 
-            rotation: Matrix::ident(3)
+            rotation: <Vec3<T> as Into<Matrix<T>>>::into(rotation)
         }
     }
 

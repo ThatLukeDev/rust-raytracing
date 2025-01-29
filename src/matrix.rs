@@ -145,7 +145,9 @@ impl<T: Copy + Add + Sub + Mul + Div> Matrix<T> {
     }
 }
 
-impl<T: Copy + From<f64> + Into<f64>> From<Vec3<T>> for Matrix<T> {
+impl<T: Copy + From<f64> + Into<f64>
+    + Add + Div + Sub + Mul + Neg<Output = T>> From<Vec3<T>> for Matrix<T>
+    where Matrix<T>: Mul<Output = Result<Matrix<T>, SizeMismatch>> {
     fn from(val: Vec3<T>) -> Self {
         let sinx: T = <T as Into<f64>>::into(val.x).to_radians().sin().into();
         let cosx: T = <T as Into<f64>>::into(val.x).to_radians().cos().into();
@@ -154,7 +156,19 @@ impl<T: Copy + From<f64> + Into<f64>> From<Vec3<T>> for Matrix<T> {
         let sinz: T = <T as Into<f64>>::into(val.z).to_radians().sin().into();
         let cosz: T = <T as Into<f64>>::into(val.z).to_radians().cos().into();
 
-        todo!()
+        ((matrix![
+            cosz,       sinz,       0.0.into();
+            -sinz,      cosz,       0.0.into();
+            0.0.into(), 0.0.into(), 1.0.into();
+        ] * matrix![
+            cosy,       0.0.into(), siny;
+            0.0.into(), 1.0.into(), 0.0.into();
+            -siny,      0.0.into(), cosy;
+        ]).unwrap() * matrix![
+            1.0.into(), 0.0.into(), 0.0.into();
+            0.0.into(), cosx,       sinx;
+            0.0.into(), -sinx,      cosx;
+        ]).unwrap()
     }
 }
 
