@@ -470,7 +470,7 @@ mod camera {
         let rotright = Camera::<f64> {
             position: Vec3::new(0.0, 10.0, 0.0),
             rotation: matrix![
-                0.0, 0.0, -1.0;
+                0.0, 0.0, 1.0;
                 0.0, 1.0, 0.0;
                 -1.0, 0.0, 0.0;
             ]
@@ -483,7 +483,7 @@ mod camera {
 
         assert_eq!(
             rotright.transform(Vec3::new(1.0, 2.0, 3.0)),
-            Vec3::new(-3.0, 2.0, -1.0)
+            Vec3::new(3.0, 2.0, -1.0)
         );
     }
 }
