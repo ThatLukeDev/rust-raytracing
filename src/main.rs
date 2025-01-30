@@ -1,17 +1,10 @@
+//! Raytracing in rust.
+
+#![warn(missing_docs)]
+
 #![allow(dead_code)]
-#![allow(unused_imports)]
-#![allow(unused_variables)]
-#![allow(unused_macros)]
 
-mod vector;
-mod ray;
-mod raytrace;
-mod sphere;
-mod color;
-mod camera;
-mod scene;
-mod matrix;
-
+/// Command line raytracer
 fn main() {
     print!("Success!");
 }
