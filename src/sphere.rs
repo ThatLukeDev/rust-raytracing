@@ -45,3 +45,42 @@ impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output
         Some(Ray::new(pos, ray.direction - (normal * (normal * ray.direction) * T::from(2.0))))
     }
 }
+
+#[cfg(test)]
+mod tests {
+    mod raytrace {
+        use super::super::*;
+
+        #[test]
+        fn intersects() {
+            assert_eq!(
+                Sphere::new(Vec3::new(0.0, 2.0, 0.0), 1.0).intersects_at(&Ray::new(Vec3::new(0.0, 0.0, 0.0), Vec3::new(0.0, 1.0, 0.0))),
+                Some(Vec3::new(0.0, 1.0, 0.0))
+            );
+            assert_eq!(
+                Sphere::new(Vec3::new(6.0, 0.0, 8.0), 1.0).intersects_along(&Ray::new(Vec3::new(3.0, 0.0, 4.0), Vec3::new(3.0, 0.0, 4.0))),
+                Some(4.0)
+            );
+            assert_eq!(
+                Sphere::new(Vec3::new(6.0, 0.0, 8.0), 1.0).intersects_along(&Ray::new(Vec3::new(-3.0, 0.0, 4.0), Vec3::new(3.0, 0.0, 4.0))),
+                None
+            );
+        }
+
+        #[test]
+        fn normal() {
+            assert_eq!(
+                Sphere::new(Vec3::new(1.0, 2.0, 3.0), 1.0).normal_at(&Vec3::new(1.0, 3.0, 3.0)),
+                Vec3::new(0.0, 1.0, 0.0)
+            );
+            assert_eq!(
+                Sphere::new(Vec3::new(1.0, 2.0, 3.0), 1.0).normal_at(&Vec3::new(2.0, 2.0, 3.0)),
+                Vec3::new(1.0, 0.0, 0.0)
+            );
+            assert_eq!(
+                Sphere::new(Vec3::new(1.0, 2.0, 3.0), 1.0).normal_at(&Vec3::new(0.0, 2.0, 3.0)),
+                Vec3::new(-1.0, 0.0, 0.0)
+            );
+        }
+    }
+}

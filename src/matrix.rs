@@ -1,7 +1,7 @@
 use std::ops::*;
 use std::fmt;
 
-use crate::Vec3;
+use crate::vector::*;
 
 #[derive(Debug, Clone)]
 pub struct SizeMismatch;
@@ -382,5 +382,353 @@ impl<T: Copy + Add<Output = T> + Sub + Mul<Output = T> + Div + From<i32>> Matrix
         let result = self.minors()?.cofactors() / self.det()?;
 
         Ok(result)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn arg_count() {
+        assert_eq!(count_args!(), 0);
+        assert_eq!(count_args!(1+1), 1);
+        assert_eq!(count_args!(4, 3), 2);
+    }
+
+    #[test]
+    fn expr_count() {
+        assert_eq!(count_expr!(), 0);
+        assert_eq!(count_expr!(1+1), 1);
+        assert_eq!(count_expr!(4, 3; 2, 3, 4), 2);
+        assert_eq!(count_expr!(4, 3; 2, 3; 4), 3);
+    }
+
+    #[test]
+    fn new() {
+        assert_eq!(
+            matrix![
+                0, 0, 0;
+                0, 0, 0;
+                0, 0, 0;
+            ],
+            Matrix::new(3, 3)
+        );
+        assert_eq!(
+            matrix![
+                0, 0;
+                0, 0;
+                0, 0;
+            ],
+            Matrix::new(3, 2)
+        );
+        assert_eq!(
+            matrix![
+                0, 0, 0;
+                0, 0, 0;
+            ],
+            Matrix::new(2, 3)
+        );
+    }
+
+    #[test]
+    fn at() {
+        assert_eq!(
+            *matrix![
+                0, 2, 0;
+                0, 0, 4;
+            ].at(2, 3),
+            4
+        );
+        assert_eq!(
+            *matrix![
+                0, 2, 0;
+                0, 0, 4;
+            ].at(1, 2),
+            2
+        );
+    }
+
+    #[test]
+    fn add() {
+        assert_eq!(
+            (matrix![
+                1, 2, 3;
+                4, 5, 6;
+            ] + matrix![
+                1, 3, 5;
+                2, 4, 6;
+            ]).unwrap(),
+            matrix![
+                2, 5, 8;
+                6, 9, 12;
+            ]
+        );
+    }
+
+    #[test]
+    #[should_panic]
+    fn add_mismatch() {
+        (matrix![
+            1, 2;
+            4, 5;
+            7, 8;
+        ] + matrix![
+            1, 3, 5;
+            2, 4, 6;
+        ]).unwrap();
+    }
+
+    #[test]
+    fn sub() {
+        assert_eq!(
+            (matrix![
+                1, 2, 3;
+                4, 5, 6;
+            ] - matrix![
+                1, 3, 5;
+                2, 4, 6;
+            ]).unwrap(),
+            matrix![
+                0, -1, -2;
+                2, 1, 0;
+            ]
+        );
+    }
+
+    #[test]
+    #[should_panic]
+    fn sub_mismatch() {
+        (matrix![
+            1, 2;
+            4, 5;
+            7, 8;
+        ] - matrix![
+            1, 3, 5;
+            2, 4, 6;
+        ]).unwrap();
+    }
+
+    #[test]
+    fn scale() {
+        assert_eq!(
+            matrix![
+                1, 2, 3;
+                4, 5, 6;
+            ] * 2,
+            matrix![
+                2, 4, 6;
+                8, 10, 12;
+            ]
+        );
+        assert_eq!(
+            matrix![
+                1, 2, 4;
+                4, 8, 6;
+            ] / 2,
+            matrix![
+                0, 1, 2;
+                2, 4, 3;
+            ]
+        );
+    }
+
+    #[test]
+    fn mul() {
+        assert_eq!(
+            (matrix![
+                1, 2;
+                3, 4;
+                5, 6;
+            ] * matrix![
+                1, 0;
+                0, 1;
+            ]).unwrap(),
+            matrix![
+                1, 2;
+                3, 4;
+                5, 6;
+            ]
+        );
+        assert_eq!(
+            (matrix![
+                1, 2, 7;
+                3, 4, 8;
+                5, 6, 9;
+            ] * matrix![
+                1, 0, 0;
+                0, 1, 0;
+                0, 0, 1;
+            ]).unwrap(),
+            matrix![
+                1, 2, 7;
+                3, 4, 8;
+                5, 6, 9;
+            ]
+        );
+        assert_eq!(
+            (matrix![
+                1, 2;
+                3, 4;
+                5, 6;
+            ] * matrix![
+                1, 0;
+                1, 1;
+            ]).unwrap(),
+            matrix![
+                3, 2;
+                7, 4;
+                11, 6;
+            ]
+        );
+    }
+
+    #[test]
+    #[should_panic]
+    fn mul_mismatch() {
+        (matrix![
+            1, 2;
+            4, 5;
+            7, 8;
+        ] * matrix![
+            1, 2;
+            4, 5;
+            7, 8;
+        ]).unwrap();
+    }
+
+    #[test]
+    fn transpose() {
+        assert_eq!(
+            matrix![
+                1, 2;
+                3, 4;
+                5, 6;
+            ].transpose(),
+            matrix![
+                1, 3, 5;
+                2, 4, 6;
+            ]
+        );
+    }
+
+    #[test]
+    fn cofactor() {
+        assert_eq!(
+            matrix![
+                1, 2;
+                3, 4;
+            ].cofactors(),
+            matrix![
+                1, -2;
+                -3, 4;
+            ]
+        );
+        assert_eq!(
+            matrix![
+                1, 2;
+                3, 4;
+                5, 6;
+            ].cofactors(),
+            matrix![
+                1, -2;
+                -3, 4;
+                5, -6;
+            ]
+        );
+    }
+
+    #[test]
+    fn minor() {
+        assert_eq!(
+            matrix![
+                1, 2;
+                3, 4;
+            ].minor(1, 2),
+            matrix![
+                3;
+            ]
+        );
+        assert_eq!(
+            matrix![
+                1, 2, 7;
+                3, 4, 8;
+                5, 6, 9;
+            ].minor(1, 2),
+            matrix![
+                3, 8;
+                5, 9;
+            ]
+        );
+    }
+
+    #[test]
+    fn det() {
+        assert_eq!(
+            matrix![
+                1, 0;
+                0, 1;
+            ].det().unwrap(),
+            1
+        );
+        assert_eq!(
+            matrix![
+                1, 2;
+                3, 4;
+            ].det().unwrap(),
+            -2
+        );
+        assert_eq!(
+            matrix![
+                1, 2, 3;
+                3, 2, 1;
+                2, 1, 3;
+            ].det().unwrap(),
+            -12
+        );
+    }
+
+    #[test]
+    fn minors() {
+        assert_eq!(
+            matrix![
+                1, 2, 3;
+                3, 2, 1;
+                2, 1, 3;
+            ].minors().unwrap(),
+            matrix![
+                5, 7, -1;
+                3, -3, -3;
+                -4, -8, -4;
+            ]
+        );
+    }
+
+    #[test]
+    fn inverse() {
+        assert_eq!(
+            matrix![
+                1, 0, 0;
+                0, 1, 0;
+                0, 0, 1;
+            ].inverse().unwrap(),
+            matrix![
+                1, 0, 0;
+                0, 1, 0;
+                0, 0, 1;
+            ]
+        );
+        assert_eq!(
+            matrix![
+                1, 1, 1;
+                1, 2, -3;
+                1, -3, 18;
+            ].inverse().unwrap(),
+            matrix![
+                27, -21, -5;
+                -21, 17, 4;
+                -5, 4, 1;
+            ]
+        );
     }
 }

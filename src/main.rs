@@ -12,11 +12,6 @@ mod camera;
 mod scene;
 mod matrix;
 
-mod tests;
-
-use vector::Vec3;
-use ray::Ray;
-
 fn main() {
     print!("Success!");
 }

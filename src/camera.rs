@@ -1,5 +1,5 @@
-use crate::Vec3;
-use crate::Ray;
+use crate::vector::*;
+use crate::ray::*;
 use crate::matrix::*;
 
 use std::ops::*;
@@ -33,5 +33,42 @@ impl<T: Copy + Add + Sub + Mul + Div> Camera<T> {
             vec.y;
             vec.z;
         ]).unwrap().clone().try_into().unwrap()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn transform() {
+        let rotright = Camera::<f64> {
+            position: Vec3::new(0.0, 10.0, 0.0),
+            rotation: matrix![
+                0.0, 0.0, 1.0;
+                0.0, 1.0, 0.0;
+                -1.0, 0.0, 0.0;
+            ]
+        };
+
+        assert_eq!(
+            rotright.transform(Vec3::new(1.0, 0.0, 0.0)),
+            Vec3::new(0.0, 0.0, -1.0)
+        );
+
+        assert_eq!(
+            rotright.transform(Vec3::new(1.0, 2.0, 3.0)),
+            Vec3::new(3.0, 2.0, -1.0)
+        );
+
+        assert_eq!(
+            Camera::new(Vec3::new(1.0, 2.0, 3.0), Vec3::new(0.0, 0.0, 0.0)).transform(Vec3::new(1.0, 2.0, 3.0)),
+            Vec3::new(1.0, 2.0, 3.0)
+        );
+
+        assert_eq!(
+            Camera::new(Vec3::new(1.0, 2.0, 3.0), Vec3::new(0.0, 90.0, 0.0)).transform(Vec3::new(1.0, 2.0, 3.0)).round(),
+            Vec3::new(3.0, 2.0, -1.0)
+        );
     }
 }
