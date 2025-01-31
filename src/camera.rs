@@ -5,11 +5,21 @@ use crate::matrix::*;
 use std::ops::*;
 
 pub struct Camera<T> {
+    /// The position of the camera in 3D space.
     pub position: Vec3<T>,
+
+    /// The rotation of the camera as a 3D Matrix.
+    ///
+    /// * Column 1 is the direction the camera is facing.
+    /// * Column 2 is the direction of the camera's up-vector.
+    /// * Column 3 is the direction of the camera's right-vector.
     pub rotation: Matrix<T>,
 }
 
 impl<T: Copy + Add + Sub + Mul + Div> Camera<T> {
+    /// Creates a new camera instance from a position and a rotation.
+    ///
+    /// Rotation is in degrees and represents clockwise moments about an axis.
     pub fn new(position: Vec3<T>, rotation: Vec3<T>) -> Self
         where T: From<i32>, Vec3<T>: Into<Matrix<T>> {
         Camera::<T> {
@@ -19,6 +29,7 @@ impl<T: Copy + Add + Sub + Mul + Div> Camera<T> {
         }
     }
 
+    /// The direction the camera is facing as a ray.
     pub fn ray(&self) -> Ray<T> {
         Ray::<T> {
             origin: self.position,
@@ -26,6 +37,9 @@ impl<T: Copy + Add + Sub + Mul + Div> Camera<T> {
         }
     }
 
+    /// Rotates a point in camera space to world space.
+    ///
+    /// Does **not** offset by position.
     pub fn transform(&self, vec: Vec3<T>) -> Vec3<T>
     where T: Mul<Output = T> + Add<Output = T>, Matrix<T>: Mul<Output = Result<Matrix<T>, SizeMismatch>> {
         (self.rotation.clone() * matrix![
