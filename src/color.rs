@@ -1,15 +1,20 @@
+/// Color in RGB space.
+///
+/// Each colour should be between 0 and 1.
 struct Color {
-    r: f64,
-    g: f64,
-    b: f64,
+    pub r: f64,
+    pub g: f64,
+    pub b: f64,
 }
 
 impl Color {
+    /// New colour from floats between 0 and 1.
     pub fn new(r: f64, g: f64, b: f64) -> Self{
-        Color { r, g, b }
+        Color { r: r.clamp(0.0, 1.0), g: g.clamp(0.0, 1.0), b: b.clamp(0.0, 1.0) }
     }
 
-    pub fn bytes(&self) -> (f64, f64, f64) {
-        ( self.r * 255.0, self.g * 255.0, self.b * 255.0 )
+    /// Returns the (R, G, B) values for a colour, as bytes from 0 to 255.
+    pub fn bytes(&self) -> (i8, i8, i8) {
+        ( (self.r * 255.0).floor() as i8, (self.g * 255.0).floor() as i8, (self.b * 255.0).floor() as i8 )
     }
 }
