@@ -12,15 +12,26 @@ impl fmt::Display for SizeMismatch {
     }
 }
 
+/// A matrix.
+///
+/// The contents are stored in the format [m][n],
+/// where m and n are the rows and columns respectively.
 #[derive(Debug)]
 pub struct Matrix<T> {
+    /// Height, m, of the matrix.
     pub height: usize,
+
+    /// Width, n, of the matrix.
     pub width: usize,
 
+    /// Contents of the matrix.
+    ///
+    /// The size of the contents vectors must match height and width.
     pub contents: Vec<Vec<T>>
 }
 
 impl<T: PartialEq + Copy> PartialEq for Matrix<T> {
+    /// Checks for equality between 2 matrices.
     fn eq(&self, other: &Matrix<T>) -> bool {
         if self.width != other.width {
             return false;
@@ -94,6 +105,9 @@ macro_rules! matrix {
 pub(crate) use matrix;
 
 impl<T: Copy> Clone for Matrix<T> {
+    /// Clones a matrix, including contents.
+    ///
+    /// There is no copy trait due to a potential for large Matrix contents.
     fn clone(&self) -> Self {
         Matrix::<T> {
             height: self.height,
@@ -104,6 +118,7 @@ impl<T: Copy> Clone for Matrix<T> {
 }
 
 impl<T: Copy + Add + Sub + Mul + Div> Matrix<T> {
+    /// Creates a new mxn matrix of 0.
     pub fn new(height: usize, width: usize) -> Self
         where T: From<i32> {
         Matrix::<T> {
@@ -113,6 +128,9 @@ impl<T: Copy + Add + Sub + Mul + Div> Matrix<T> {
         }
     }
 
+    /// Creates a new mxm matrix of the identity matrix.
+    ///
+    /// Each diagonal will be 1, all other values will be 0.
     pub fn ident(height: usize) -> Self
         where T: From<i32> {
         let mut result = Matrix::<T> {
@@ -128,18 +146,22 @@ impl<T: Copy + Add + Sub + Mul + Div> Matrix<T> {
         result
     }
 
+    /// Getter for height.
     pub fn height(&self) -> usize {
         self.height
     }
 
+    /// Getter for width.
     pub fn width(&self) -> usize {
         self.width
     }
 
+    /// Returns the mxnth element, where m and n start at 1.
     pub fn at(&self, m: usize, n: usize) -> &T {
         &self.contents[m-1][n-1]
     }
 
+    /// Returns a mutable reference to the mxnth element, where m and n start at 1.
     pub fn mut_at(&mut self, m: usize, n: usize) -> &T {
         &mut self.contents[m-1][n-1]
     }
@@ -148,6 +170,7 @@ impl<T: Copy + Add + Sub + Mul + Div> Matrix<T> {
 impl<T: Copy + From<f64> + Into<f64>
     + Add + Div + Sub + Mul + Neg<Output = T>> From<Vec3<T>> for Matrix<T>
     where Matrix<T>: Mul<Output = Result<Matrix<T>, SizeMismatch>> {
+    /// Converts a Vec3 as a rotation vector to a 3x3 rotation matrix.
     fn from(val: Vec3<T>) -> Self {
         let sinx: T = <T as Into<f64>>::into(val.x).to_radians().sin().into();
         let cosx: T = <T as Into<f64>>::into(val.x).to_radians().cos().into();
@@ -175,18 +198,21 @@ impl<T: Copy + From<f64> + Into<f64>
 impl<T: Copy> Index<usize> for Matrix<T> {
     type Output = Vec<T>;
 
+    /// Returns a reference to the mxnth element, where m and n start at 0.
     fn index<'a>(&'a self, i: usize) -> &'a Vec<T> {
         &self.contents[i]
     }
 }
 
 impl<T: Copy> IndexMut<usize> for Matrix<T> {
+    /// Returns a mutable reference to the mxnth element, where m and n start at 0.
     fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut Vec<T> {
         &mut self.contents[i]
     }
 }
 
 impl<T: Copy> fmt::Display for Matrix<T> {
+    /// Displys the height and width of a matrix, in the format `[ m n ]`.
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[ {} {} ]", self.height, self.width)
     }
@@ -195,6 +221,9 @@ impl<T: Copy> fmt::Display for Matrix<T> {
 impl<T: Copy + Add<Output = T>> Add for Matrix<T> {
     type Output = Result<Self, SizeMismatch>;
 
+    /// Adds each element in a matrix to the corresponding element.
+    ///
+    /// Will fail if height and width do not match.
     fn add(mut self, other: Self) -> Self::Output {
         if self.width != other.width {
             return Err(SizeMismatch);
@@ -216,6 +245,9 @@ impl<T: Copy + Add<Output = T>> Add for Matrix<T> {
 impl<T: Copy + Sub<Output = T>> Sub for Matrix<T> {
     type Output = Result<Self, SizeMismatch>;
 
+    /// Subtracts each element in a matrix from the corresponding element.
+    ///
+    /// Will fail if height and width do not match.
     fn sub(mut self, other: Self) -> Self::Output {
         if self.width != other.width {
             return Err(SizeMismatch);
@@ -237,6 +269,7 @@ impl<T: Copy + Sub<Output = T>> Sub for Matrix<T> {
 impl<T: Copy + Mul<Output = T>> Mul<T> for Matrix<T> {
     type Output = Self;
 
+    /// Scales each element in a matrix by a factor.
     fn mul(mut self, other: T) -> Self::Output {
         for i in 0..self.height {
             for j in 0..self.width {
@@ -251,6 +284,7 @@ impl<T: Copy + Mul<Output = T>> Mul<T> for Matrix<T> {
 impl<T: Copy + Div<Output = T>> Div<T> for Matrix<T> {
     type Output = Self;
 
+    /// Scales each element in a matrix by 1 divided by the factor.
     fn div(mut self, other: T) -> Self::Output {
         for i in 0..self.height {
             for j in 0..self.width {
@@ -265,6 +299,29 @@ impl<T: Copy + Div<Output = T>> Div<T> for Matrix<T> {
 impl<T: Copy + From<i32> + Sub + Div + Mul<Output = T> + Add<Output = T>> Mul for Matrix<T> {
     type Output = Result<Self, SizeMismatch>;
 
+    /// Matrix multiplication.
+    ///
+    /// Takes two matrices: m1xn1; m2xn2,
+    /// and returns the matrix multiplication of the two matrices,
+    /// in the form m1xn2.
+    ///
+    /// ```
+    /// assert_eq!(
+    ///     (matrix![
+    ///         1, 2;
+    ///         3, 4;
+    ///         5, 6;
+    ///     ] * matrix![
+    ///         1, 0;
+    ///         0, 1;
+    ///     ]).unwrap(),
+    ///     matrix![
+    ///         1, 2;
+    ///         3, 4;
+    ///         5, 6;
+    ///     ]
+    /// );
+    /// ```
     fn mul(self, other: Self) -> Self::Output {
         if self.width != other.height {
             return Err(SizeMismatch);
@@ -285,6 +342,23 @@ impl<T: Copy + From<i32> + Sub + Div + Mul<Output = T> + Add<Output = T>> Mul fo
 }
 
 impl<T: Copy + Add + Sub + Mul + Div + From<i32>> Matrix<T> {
+    /// Transposes a matrix.
+    ///
+    /// mxn -> nxm.
+    ///
+    /// ```
+    /// assert_eq!(
+    ///     matrix![
+    ///         1, 2;
+    ///         3, 4;
+    ///         5, 6;
+    ///     ].transpose(),
+    ///     matrix![
+    ///         1, 3, 5;
+    ///         2, 4, 6;
+    ///     ]
+    /// );
+    /// ```
     pub fn transpose(&self) -> Self {
         let mut result = Matrix::new(self.width, self.height);
 
@@ -299,6 +373,22 @@ impl<T: Copy + Add + Sub + Mul + Div + From<i32>> Matrix<T> {
 }
 
 impl<T: Copy + Add + Sub + Mul<Output = T> + Div + From<i32>> Matrix<T> {
+    /// Returns the matrix of cofactors.
+    ///
+    /// ```
+    /// assert_eq!(
+    ///     matrix![
+    ///         1, 2, 3;
+    ///         3, 4, 5;
+    ///         5, 6, 7;
+    ///     ].cofactors(),
+    ///     matrix![
+    ///         1, -2, 3;
+    ///         -3, 4, -5;
+    ///         5, -6, 7;
+    ///     ]
+    /// );
+    /// ```
     pub fn cofactors(mut self) -> Self {
         for i in 0..self.height {
             for j in 0..self.width {
@@ -313,6 +403,23 @@ impl<T: Copy + Add + Sub + Mul<Output = T> + Div + From<i32>> Matrix<T> {
 }
 
 impl<T: Copy + Add<Output = T> + Sub + Mul<Output = T> + Div + From<i32>> Matrix<T> {
+    /// Returns the minor of a matrix.
+    ///
+    /// The minor of a matrix is that matrix without the row and column of the specified element.
+    ///
+    /// ```
+    /// assert_eq!(
+    ///     matrix![
+    ///         1, 2, 7;
+    ///         3, 4, 8;
+    ///         5, 6, 9;
+    ///     ].minor(1, 2),
+    ///     matrix![
+    ///         3, 8;
+    ///         5, 9;
+    ///     ]
+    /// );
+    /// ```
     pub fn minor(&self, m: usize, n: usize) -> Self {
         let mut result = Matrix::new(self.height - 1, self.width - 1);
 
@@ -339,6 +446,21 @@ impl<T: Copy + Add<Output = T> + Sub + Mul<Output = T> + Div + From<i32>> Matrix
         result
     }
 
+    /// Returns the determinant of aa matrix.
+    ///
+    /// The determinant of a matrix is the minor matrix's determinant
+    /// from each element in one row or column,
+    /// multiplied by the matrix of cofactors for that element or column.
+    ///
+    /// ```
+    /// assert_eq!(
+    ///     matrix![
+    ///         1, 2;
+    ///         3, 4;
+    ///     ].det().unwrap(),
+    ///     -2
+    /// );
+    /// ```
     pub fn det(&self) -> Result<T, SizeMismatch> {
         if self.height != self.width {
             return Err(SizeMismatch);
@@ -357,6 +479,9 @@ impl<T: Copy + Add<Output = T> + Sub + Mul<Output = T> + Div + From<i32>> Matrix
         Ok(det)
     }
 
+    /// Returns the matrix of minors.
+    ///
+    /// Where each element becomes the determinant of its minor matrix.
     pub fn minors(&self) -> Result<Self, SizeMismatch> {
         if self.height != self.width {
             return Err(SizeMismatch);
@@ -373,6 +498,26 @@ impl<T: Copy + Add<Output = T> + Sub + Mul<Output = T> + Div + From<i32>> Matrix
         Ok(result)
     }
 
+    /// Inverses a matrix.
+    ///
+    /// Such that a matrix multiplied by its inverse becomes the identity.
+    ///
+    /// WIll fail if the determinant of the matrix is zero, and thus has no inverse.
+    ///
+    /// ```
+    /// assert_eq!(
+    ///     matrix![
+    ///         1, 1, 1;
+    ///         1, 2, -3;
+    ///         1, -3, 18;
+    ///     ].inverse().unwrap(),
+    ///     matrix![
+    ///         27, -21, -5;
+    ///         -21, 17, 4;
+    ///         -5, 4, 1;
+    ///     ]
+    /// );
+    /// ```
     pub fn inverse(&self) -> Result<Self, SizeMismatch>
         where Matrix<T>: Div<T, Output = Matrix<T>> {
         if self.height != self.width {
