@@ -40,6 +40,18 @@ impl<T: Copy + Add + Sub + Mul + Div> Camera<T> {
     /// Rotates a point in camera space to world space.
     ///
     /// Does **not** offset by position.
+    ///
+    /// ```
+    /// # use rusttracing::vector::*;
+    /// # use rusttracing::camera::*;
+    /// let cam = Camera::new(Vec3::new(0.0, 1.0, 0.0), Vec3::new(0.0, 90.0, 0.0));
+    /// assert_eq!(
+    ///     cam.transform(Vec3::new(1.0, 2.0, 3.0)).round(),
+    ///     Vec3::new(3.0, 2.0, -1.0)
+    /// );
+    /// ```
+    /// Note: Round is used as the result from transform is -0.999... not -1
+    /// due to floating point precision errors.
     pub fn transform(&self, vec: Vec3<T>) -> Vec3<T>
     where T: Mul<Output = T> + Add<Output = T>, Matrix<T>: Mul<Output = Result<Matrix<T>, SizeMismatch>> {
         (self.rotation.clone() * matrix![
