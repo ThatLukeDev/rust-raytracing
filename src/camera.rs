@@ -13,9 +13,9 @@ pub struct Camera<T> {
 
     /// The rotation of the camera as a 3D Matrix.
     ///
-    /// * Column 1 is the direction the camera is facing.
+    /// * Column 1 is the direction the camera is right-vector.
     /// * Column 2 is the direction of the camera's up-vector.
-    /// * Column 3 is the direction of the camera's right-vector.
+    /// * Column 3 is the direction of the camera's facing.
     pub rotation: Matrix<T>,
 }
 
