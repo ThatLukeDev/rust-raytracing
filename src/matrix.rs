@@ -58,24 +58,28 @@ impl<T: PartialEq + Copy> PartialEq for Matrix<T> {
     }
 }
 
+#[macro_export]
 macro_rules! count_args { // recursive helper func
     () => (0usize);
     ($x:expr) => (1usize);
     ($x:expr, $($y:expr),+) => (1usize + count_args!($($y),+));
 }
 
+#[macro_export]
 macro_rules! count_expr { // recursive helper func
     () => (0usize);
     ($($x:expr),+) => (1usize);
     ($($x:expr),+; $($($y:expr),+);+) => (1usize + count_expr!($($($y),+);+));
 }
 
+#[macro_export]
 macro_rules! count_expr_args { // recursive helper func
     () => (0usize);
     ($($x:expr),+) => (count_args!($($x),+));
     ($($x:expr),+; $($($y:expr),+);+ $(;)?) => (count_args!($($x),+) + count_expr_args!($($($y),+);+));
 }
 
+#[macro_export]
 macro_rules! wrap_in_vec {
     ($($x:expr),+ $(,)?) => {
         vec!(vec!($($x),+))
@@ -86,11 +90,12 @@ macro_rules! wrap_in_vec {
     };
 }
 
-pub(crate) use count_args;
-pub(crate) use count_expr;
-pub(crate) use count_expr_args;
-pub(crate) use wrap_in_vec;
+pub use count_args;
+pub use count_expr;
+pub use count_expr_args;
+pub use wrap_in_vec;
 
+#[macro_export]
 macro_rules! matrix {
     ( $($($element:expr),+);+ $(;)? ) => {
         Matrix {
@@ -102,7 +107,7 @@ macro_rules! matrix {
     }
 }
 
-pub(crate) use matrix;
+pub use matrix;
 
 impl<T: Copy> Clone for Matrix<T> {
     /// Clones a matrix, including contents.
@@ -306,6 +311,7 @@ impl<T: Copy + From<i32> + Sub + Div + Mul<Output = T> + Add<Output = T>> Mul fo
     /// in the form m1xn2.
     ///
     /// ```
+    /// # use rusttracing::matrix::*;
     /// assert_eq!(
     ///     (matrix![
     ///         1, 2;
@@ -347,6 +353,7 @@ impl<T: Copy + Add + Sub + Mul + Div + From<i32>> Matrix<T> {
     /// mxn -> nxm.
     ///
     /// ```
+    /// # use rusttracing::matrix::*;
     /// assert_eq!(
     ///     matrix![
     ///         1, 2;
@@ -376,6 +383,7 @@ impl<T: Copy + Add + Sub + Mul<Output = T> + Div + From<i32>> Matrix<T> {
     /// Returns the matrix of cofactors.
     ///
     /// ```
+    /// # use rusttracing::matrix::*;
     /// assert_eq!(
     ///     matrix![
     ///         1, 2, 3;
@@ -408,6 +416,7 @@ impl<T: Copy + Add<Output = T> + Sub + Mul<Output = T> + Div + From<i32>> Matrix
     /// The minor of a matrix is that matrix without the row and column of the specified element.
     ///
     /// ```
+    /// # use rusttracing::matrix::*;
     /// assert_eq!(
     ///     matrix![
     ///         1, 2, 7;
@@ -453,6 +462,7 @@ impl<T: Copy + Add<Output = T> + Sub + Mul<Output = T> + Div + From<i32>> Matrix
     /// multiplied by the matrix of cofactors for that element or column.
     ///
     /// ```
+    /// # use rusttracing::matrix::*;
     /// assert_eq!(
     ///     matrix![
     ///         1, 2;
@@ -505,6 +515,7 @@ impl<T: Copy + Add<Output = T> + Sub + Mul<Output = T> + Div + From<i32>> Matrix
     /// WIll fail if the determinant of the matrix is zero, and thus has no inverse.
     ///
     /// ```
+    /// # use rusttracing::matrix::*;
     /// assert_eq!(
     ///     matrix![
     ///         1, 1, 1;
