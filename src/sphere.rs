@@ -4,17 +4,27 @@ use crate::raytrace::Raytrace;
 
 use std::ops::*;
 
+/// Sphere.
+///
+/// Has an origin, and radius.
+///
+/// Implements the Raytrace trait.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Sphere<T> {
+    /// Origin, as a Vec3.
     origin: Vec3<T>,
+
+    /// Radius.
     radius: T
 }
 
 impl<T> Sphere<T> {
+    /// Default constructor.
     pub fn new(origin: Vec3<T>, radius: T) -> Self {
         Sphere::<T> { origin, radius }
     }
 
+    /// Gives the normal to a point on the sphere.
     pub fn normal_at(&self, &pos: &Vec3<T>) -> Vec3<T>
         where T: Copy + Add<Output = T> + Mul<Output = T> + From<f64> + Into<f64> + Div<Output = T>, Vec3<T>: Copy + Sub<Output = Vec3<T>> {
         (pos - self.origin).unit()
@@ -22,6 +32,9 @@ impl<T> Sphere<T> {
 }
 
 impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output = T> + Div<Output = T> + Sub<Output = T>> Raytrace<T> for Sphere<T> {
+    /// Gives the distance along a ray that a sphere lies.
+    ///
+    /// Returns None if no solutions exist.
     fn intersects_along(&self, ray: &Ray<T>) -> Option<T> {
         let offset = ray.origin - self.origin;
 
@@ -38,6 +51,7 @@ impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output
         Some( (b * (-1.0).into() - discriminant.into().sqrt().into()) / (a * (2.0).into()) )
     }
 
+    /// Reflects a ray along the normal.
     fn transmit(&self, ray: &Ray<T>) -> Option<Ray<T>> {
         let pos: Vec3<T> = self.intersects_at(ray)?;
         let normal: Vec3<T> = self.normal_at(&pos);
