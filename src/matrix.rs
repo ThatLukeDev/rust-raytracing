@@ -3,6 +3,7 @@ use std::fmt;
 
 use crate::vector::*;
 
+/// The error type for a mismatch of sizes between matrices.
 #[derive(Debug, Clone)]
 pub struct SizeMismatch;
 
@@ -59,6 +60,7 @@ impl<T: PartialEq + Copy> PartialEq for Matrix<T> {
 }
 
 #[macro_export]
+#[doc(hidden)]
 macro_rules! count_args { // recursive helper func
     () => (0usize);
     ($x:expr) => (1usize);
@@ -66,6 +68,7 @@ macro_rules! count_args { // recursive helper func
 }
 
 #[macro_export]
+#[doc(hidden)]
 macro_rules! count_expr { // recursive helper func
     () => (0usize);
     ($($x:expr),+) => (1usize);
@@ -73,6 +76,7 @@ macro_rules! count_expr { // recursive helper func
 }
 
 #[macro_export]
+#[doc(hidden)]
 macro_rules! count_expr_args { // recursive helper func
     () => (0usize);
     ($($x:expr),+) => (count_args!($($x),+));
@@ -80,6 +84,7 @@ macro_rules! count_expr_args { // recursive helper func
 }
 
 #[macro_export]
+#[doc(hidden)]
 macro_rules! wrap_in_vec {
     ($($x:expr),+ $(,)?) => {
         vec!(vec!($($x),+))
@@ -95,6 +100,19 @@ pub use count_expr;
 pub use count_expr_args;
 pub use wrap_in_vec;
 
+/// Shorthand for creating a matrix.
+///
+/// ```
+/// # use rusttracing::matrix::*;
+/// assert_eq!(
+///     *matrix![
+///         1, 2;
+///         3, 4;
+///         5, 6;
+///     ].at(2, 2),
+///     4
+/// )
+/// ```
 #[macro_export]
 macro_rules! matrix {
     ( $($($element:expr),+);+ $(;)? ) => {

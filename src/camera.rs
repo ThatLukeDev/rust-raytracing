@@ -4,6 +4,9 @@ use crate::matrix::*;
 
 use std::ops::*;
 
+/// A camera object, with a postion and a rotation matrix.
+///
+/// Can be instantiated with a position and rotation matrix, in degrees [[Camera::new]].
 pub struct Camera<T> {
     /// The position of the camera in 3D space.
     pub position: Vec3<T>,

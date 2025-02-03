@@ -4,20 +4,27 @@ use std::ops::*;
 
 use crate::matrix::*;
 
+/// A point, or vector, or whatever you want that has 3 coordinates, within 3D space.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Vec3<T> {
+    /// The x amount.
     pub x: T,
+    /// The y amount.
     pub y: T,
+    /// The z amount.
     pub z: T
 }
 
 impl<T> Vec3<T> {
+    /// Default constructor.
     pub fn new(x: T, y: T, z: T) -> Self {
         Vec3::<T> { x, y, z }
     }
 }
 
 impl<T: From<f64> + Into<f64> + Add<Output = T>> Vec3<T> {
+    /// Takes the vector, and returns a new vector
+    /// where each part is rounded to a whole number.
     pub fn round(self) -> Self {
         Vec3::new(
             <T as Into<f64>>::into(self.x + 0.5.into()).floor().into(),
@@ -27,12 +34,16 @@ impl<T: From<f64> + Into<f64> + Add<Output = T>> Vec3<T> {
     }
 }
 
+/// The error type for a mismatch of sizes between the object and the Vec3.
 #[derive(Debug)]
 pub struct SizeError;
 
 impl<T: Copy> TryFrom<Vec<T>> for Vec3<T> {
     type Error = SizeError;
 
+    /// Turns a Vec to a Vec3.
+    ///
+    /// WIll return Error if Vec does not have exactly 3 items.
     fn try_from(val: Vec<T>) -> Result<Self, SizeError> {
         match val.len() {
             3 => Ok(Vec3::<T> { x: val[0], y: val[1], z: val[2] }),
@@ -44,6 +55,9 @@ impl<T: Copy> TryFrom<Vec<T>> for Vec3<T> {
 impl<T: Copy> TryFrom<Matrix<T>> for Vec3<T> {
     type Error = SizeError;
 
+    /// Turns a Matrix to a Vec3.
+    ///
+    /// WIll return Error if Matrix is not 3x1.
     fn try_from(val: Matrix<T>) -> Result<Self, SizeError> {
         if val.width != 1 {
             return Err(SizeError);
@@ -57,14 +71,17 @@ impl<T: Copy> TryFrom<Matrix<T>> for Vec3<T> {
 
 impl<T: Copy + Mul<Output = T> + Add<Output = T> + From<f64> + Into<f64>> Vec3<T>
     where Self: Div<T, Output = Self> {
+    /// Returns the magnitude of a Vec3, squared.
     pub fn length_squared(&self) -> T {
         self.x * self.x + self.y * self.y + self.z * self.z
     }
 
+    /// Returns the magnitude of a Vec3.
     pub fn length(&self) -> T {
         self.length_squared().into().sqrt().into()
     }
 
+    /// Returns the Vec3 with the same direction, but a magnitude of 1.
     pub fn unit(&self) -> Self {
         *self / self.length()
     }

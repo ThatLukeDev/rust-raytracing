@@ -1,7 +1,5 @@
 use crate::vector::Vec3;
 
-use std::fmt;
-
 use std::ops::*;
 
 /// A 3D ray object, that has an origin, and direction.
