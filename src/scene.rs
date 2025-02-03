@@ -3,7 +3,11 @@ use crate::raytrace::*;
 use std::ops::*;
 
 struct Scene<T> {
-    // T represents precision of float used throughout the program
+    /// All of the objects throughout the scene.
+    ///
+    /// Every object must implement the Raytrace trait.
+    ///
+    /// T represents precision of float used throughout the program.
     objects: Vec<Box<dyn Raytrace<T>>>
 }
 
