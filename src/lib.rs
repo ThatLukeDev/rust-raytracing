@@ -16,9 +16,6 @@ pub mod raytrace;
 /// A sphere, with the Raytrace trait.
 pub mod sphere;
 
-/// A color, in RGB.
-pub mod color;
-
 /// A camera, consisting of an origin and a rotation matrix.
 pub mod camera;
 
@@ -28,3 +25,8 @@ pub mod scene;
 /// A matrix, of any size, and utility functions.
 pub mod matrix;
 
+/// A color, in RGB.
+pub mod color;
+
+/// A 2D array of colors.
+pub mod image;

@@ -1,9 +1,14 @@
 /// Color in RGB space.
 ///
 /// Each colour should be between 0 and 1.
-struct Color {
+pub struct Color {
+    /// Red proportion, as a decimal.
     pub r: f64,
+
+    /// Green proportion, as a decimal.
     pub g: f64,
+
+    /// Blue proportion, as a decimal.
     pub b: f64,
 }
 
