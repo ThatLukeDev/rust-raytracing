@@ -22,7 +22,21 @@ impl<const WIDTH: usize, const HEIGHT: usize> Image<WIDTH, HEIGHT> {
 
     /// Turns the image into a PPM compatible byte vec.
     pub fn to_ppm(&self) -> Vec<u8> {
-        todo!()
+        let mut out: Vec<u8> = vec![];
+
+        // PPM header
+        out.extend_from_slice("P8".as_bytes());
+        out.push(b' ');
+        out.extend_from_slice(WIDTH.to_string().as_bytes());
+        out.push(b' ');
+        out.extend_from_slice(HEIGHT.to_string().as_bytes());
+        out.push(b' ');
+        out.extend_from_slice("255".as_bytes());
+        out.push(b'\n');
+
+        todo!();
+
+        out
     }
 }
 
