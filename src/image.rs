@@ -21,7 +21,7 @@ impl<const WIDTH: usize, const HEIGHT: usize> Image<WIDTH, HEIGHT> {
     }
 
     /// Turns the image into a PPM compatible byte vec.
-    pub fn to_ppm() -> Vec<u8> {
+    pub fn to_ppm(&self) -> Vec<u8> {
         todo!()
     }
 }
