@@ -12,6 +12,20 @@ pub struct Image<const WIDTH: usize, const HEIGHT: usize> {
     pub data: [[Color; HEIGHT]; WIDTH]
 }
 
+impl<const WIDTH: usize, const HEIGHT: usize> Image<WIDTH, HEIGHT> {
+    /// Creates a new black image based on context.
+    pub fn new() -> Self {
+        Image::<WIDTH, HEIGHT> {
+            data: [[Color::new(0.0, 0.0, 0.0); HEIGHT]; WIDTH]
+        }
+    }
+
+    /// Turns the image into a PPM compatible byte vec.
+    pub fn to_ppm() -> Vec<u8> {
+        todo!()
+    }
+}
+
 impl<const WIDTH: usize, const HEIGHT: usize> Index<usize> for Image<WIDTH, HEIGHT> {
     type Output = [Color; HEIGHT];
 

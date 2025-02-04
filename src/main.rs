@@ -1,10 +1,8 @@
 //! Raytracing in rust.
 
-#![warn(missing_docs)]
-
-#![allow(dead_code)]
+use rusttracing::image::*;
 
 /// Command line raytracer
 fn main() {
-    print!("Success!");
+    let img: Image<192, 108> = Image::new();
 }
