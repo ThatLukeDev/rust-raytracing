@@ -15,7 +15,7 @@ impl fmt::Display for SizeMismatch {
 
 /// A matrix.
 ///
-/// The contents are stored in the format [m][n],
+/// The contents are stored in the format \[m]\[n],
 /// where m and n are the rows and columns respectively.
 #[derive(Debug)]
 pub struct Matrix<T> {
