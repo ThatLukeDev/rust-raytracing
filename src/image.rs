@@ -4,9 +4,9 @@ use std::ops::*;
 
 /// An image struct.
 ///
-/// Stores a 2D array, defined by constant sizes [WIDTH] and [HEIGHT], of [Color].
+/// Stores a 2D array, defined by constant sizes WIDTH and HEIGHT, of Color.
 ///
-/// [WIDTH] and [HEIGHT] must be constant at compile time.
+/// WIDTH and HEIGHT must be constant at compile time.
 pub struct Image<const WIDTH: usize, const HEIGHT: usize> {
     /// 2D array of pixels.
     pub data: [[Color; HEIGHT]; WIDTH]
