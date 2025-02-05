@@ -63,9 +63,9 @@ impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output
     fn recolor(&self, _ray: &Ray<T>, color: Color) -> Color {
         let mut out = color;
 
-        out.r += 0.01;
-        out.g += 0.01;
-        out.b += 0.01;
+        out.r += 0.1;
+        out.g += 0.1;
+        out.b += 0.1;
 
         out
     }

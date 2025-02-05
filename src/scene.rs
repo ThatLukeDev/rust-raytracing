@@ -4,6 +4,7 @@ use crate::camera::*;
 
 use std::ops::*;
 
+/// A collection of objects, camera, and background color.
 pub struct Scene<T> {
     /// All of the objects throughout the scene.
     ///
