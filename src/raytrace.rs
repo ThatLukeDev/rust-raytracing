@@ -1,5 +1,6 @@
 use crate::vector::Vec3;
 use crate::ray::Ray;
+use crate::color::Color;
 
 use std::ops::*;
 
@@ -13,6 +14,9 @@ pub trait Raytrace<T: Copy + Add<Output = T> + Mul<Output = T> + Div<Output = T>
     /// Reflects, refracts, or otherwise transforms the ray
     /// in accordance to how the object should behave.
     fn transmit(&self, ray: &Ray<T>) -> Option<Ray<T>>;
+
+    /// Changes the color
+    fn recolor(&self, ray: &Ray<T>, color: Color) -> Color;
 
     /// Gives the position of intersection between a ray and an object.
     fn intersects_at(&self, ray: &Ray<T>) -> Option<Vec3<T>> {

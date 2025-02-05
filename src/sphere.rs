@@ -1,6 +1,7 @@
 use crate::vector::Vec3;
 use crate::ray::Ray;
 use crate::raytrace::Raytrace;
+use crate::color::Color;
 
 use std::ops::*;
 
@@ -57,6 +58,16 @@ impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output
         let normal: Vec3<T> = self.normal_at(&pos);
 
         Some(Ray::new(pos, ray.direction - (normal * (normal * ray.direction) * T::from(2.0))))
+    }
+
+    fn recolor(&self, _ray: &Ray<T>, color: Color) -> Color {
+        let mut out = color;
+
+        out.r += 0.01;
+        out.g += 0.01;
+        out.b += 0.01;
+
+        out
     }
 }
 
