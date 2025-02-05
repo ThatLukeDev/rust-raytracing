@@ -11,7 +11,13 @@ fn main() {
 
     for x in 0..img.data.len() {
         for y in 0..img.data[x].len() {
-            img[x][y] = Color::new(x as f64, y as f64, 0.0);
+            let percent_x = x as f64 / img.data.len() as f64;
+            let percent_y = y as f64 / img.data[x].len() as f64;
+            img[x][y] = Color::new(
+                1.0 - percent_x,
+                percent_x,
+                percent_y
+            );
         }
     }
 

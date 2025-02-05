@@ -25,16 +25,25 @@ impl<const WIDTH: usize, const HEIGHT: usize> Image<WIDTH, HEIGHT> {
         let mut out: Vec<u8> = vec![];
 
         // PPM header
-        out.extend_from_slice("P8".as_bytes());
-        out.push(b' ');
-        out.extend_from_slice(WIDTH.to_string().as_bytes());
-        out.push(b' ');
-        out.extend_from_slice(HEIGHT.to_string().as_bytes());
-        out.push(b' ');
-        out.extend_from_slice("255".as_bytes());
-        out.push(b'\n');
+        out.extend_from_slice((
+            "P6".to_owned()
+            + " "
+            + &WIDTH.to_string()
+            + " "
+            + &HEIGHT.to_string()
+            + " "
+            + "255"
+            + "\n"
+        ).as_bytes());
 
-        todo!();
+        for y in 0..HEIGHT {
+            for x in 0..WIDTH {
+                let raw = self.data[x][y].bytes();
+                out.push(raw.0);
+                out.push(raw.1);
+                out.push(raw.2);
+            }
+        }
 
         out
     }

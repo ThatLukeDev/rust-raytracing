@@ -20,7 +20,7 @@ impl Color {
     }
 
     /// Returns the (R, G, B) values for a colour, as bytes from 0 to 255.
-    pub fn bytes(&self) -> (i8, i8, i8) {
-        ( (self.r * 255.0).floor() as i8, (self.g * 255.0).floor() as i8, (self.b * 255.0).floor() as i8 )
+    pub fn bytes(&self) -> (u8, u8, u8) {
+        ( (self.r * 255.0).floor() as u8, (self.g * 255.0).floor() as u8, (self.b * 255.0).floor() as u8 )
     }
 }
