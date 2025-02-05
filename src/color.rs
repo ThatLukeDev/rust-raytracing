@@ -1,7 +1,7 @@
 /// Color in RGB space.
 ///
 /// Each colour should be between 0 and 1.
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Color {
     /// Red proportion, as a decimal.
     pub r: f64,

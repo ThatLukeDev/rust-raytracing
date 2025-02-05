@@ -16,13 +16,16 @@ pub struct Sphere<T> {
     origin: Vec3<T>,
 
     /// Radius.
-    radius: T
+    radius: T,
+
+    /// Colour of sphere.
+    color: Color
 }
 
 impl<T> Sphere<T> {
     /// Default constructor.
-    pub fn new(origin: Vec3<T>, radius: T) -> Self {
-        Sphere::<T> { origin, radius }
+    pub fn new(origin: Vec3<T>, radius: T, color: Color) -> Self {
+        Sphere::<T> { origin, radius, color }
     }
 
     /// Gives the normal to a point on the sphere.
@@ -63,9 +66,9 @@ impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output
     fn recolor(&self, _ray: &Ray<T>, color: Color) -> Color {
         let mut out = color;
 
-        out.r += 0.1;
-        out.g += 0.1;
-        out.b += 0.1;
+        out.r *= self.color.r;
+        out.g *= self.color.g;
+        out.b *= self.color.b;
 
         out
     }
