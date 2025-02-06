@@ -52,7 +52,13 @@ impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output
             return None;
         }
 
-        Some( (b * (-1.0).into() - discriminant.into().sqrt().into()) / (a * (2.0).into()) )
+        let distance = (b * (-1.0).into() - discriminant.into().sqrt().into()) / (a * (2.0).into());
+
+        if distance < (0.0).into() {
+            return None;
+        }
+
+        Some(distance)
     }
 
     /// Reflects a ray along the normal.
