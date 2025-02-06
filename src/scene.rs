@@ -1,6 +1,7 @@
 use crate::raytrace::*;
 use crate::ray::*;
 use crate::camera::*;
+use crate::color::*;
 
 use std::ops::*;
 
@@ -42,5 +43,41 @@ impl<T: Copy + From<f64> + PartialOrd + Add<Output = T> + Sub<Output = T> + Mul<
         }
 
         (closest_obj, lowest)
+    }
+
+    /// Runs the trace function multiple times, and aggregates the corresponding colour.
+    pub fn raytrace(&self, ray: Ray<T>, camera_color: Color, rays: usize, depth: usize) -> Color {
+        self.trace_bounce(ray, camera_color, rays, depth, depth)
+    }
+
+    /// Runs the trace function multiple times, and aggregates the corresponding colour.
+    pub fn trace_bounce(&self, ray: Ray<T>, camera_color: Color, rays: usize, depth: usize, max_depth: usize) -> Color {
+        if depth == 0 {
+            return Color::new(1.0, 1.0, 1.0);
+        }
+
+        let mut color = Color::new(0.0, 0.0, 0.0);
+        let mut bounces = 0.0 as f64;
+
+        for _i in 0..rays {
+            let current_color = match self.trace(ray).0 {
+                Some(obj) => {
+                    (*obj).recolor(&ray, self.trace_bounce(obj.transmit(&ray).unwrap(), camera_color, rays, depth - 1, depth))
+                },
+                None => camera_color
+            };
+
+            color.r += current_color.r;
+            color.g += current_color.g;
+            color.b += current_color.b;
+
+            bounces += 1.0;
+        }
+
+        color.r /= bounces;
+        color.g /= bounces;
+        color.b /= bounces;
+
+        color
     }
 }

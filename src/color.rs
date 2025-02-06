@@ -19,6 +19,11 @@ impl Color {
         Color { r: r.clamp(0.0, 1.0), g: g.clamp(0.0, 1.0), b: b.clamp(0.0, 1.0) }
     }
 
+    /// New colour from floats between 0 and 1 multiplied by the emission value.
+    pub fn new_emission(r: f64, g: f64, b: f64, a: f64) -> Self{
+        Color { r: r.clamp(0.0, 1.0) * a, g: g.clamp(0.0, 1.0) * a, b: b.clamp(0.0, 1.0) * a }
+    }
+
     /// Returns the (R, G, B) values for a colour, as bytes from 0 to 255.
     pub fn bytes(&self) -> (u8, u8, u8) {
         ( (self.r * 255.0).floor() as u8, (self.g * 255.0).floor() as u8, (self.b * 255.0).floor() as u8 )
