@@ -41,7 +41,13 @@ fn main() {
 
             let camera_color = Color::new_emission(1.0, 1.0, 1.0, 1000.0);
 
-            img[x][y] = scene.raytrace(camera_ray, camera_color, 1, 2);
+            let mut result = scene.raytrace(camera_ray, camera_color, 1, 16);
+
+            result.r /= 1000.0;
+            result.g /= 1000.0;
+            result.b /= 1000.0;
+
+            img[x][y] = result;
         }
     }
 
