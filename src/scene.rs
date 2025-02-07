@@ -65,7 +65,7 @@ impl<T: Copy + From<f64> + PartialOrd + Add<Output = T> + Sub<Output = T> + Mul<
             bounces += 1.0;
         }
 
-        color /= bounces;
+        color = color / bounces;
 
         color
     }
