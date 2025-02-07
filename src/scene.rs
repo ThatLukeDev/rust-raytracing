@@ -55,23 +55,17 @@ impl<T: Copy + From<f64> + PartialOrd + Add<Output = T> + Sub<Output = T> + Mul<
         let mut bounces = 0.0 as f64;
 
         for _i in 0..rays {
-            let current_color = match self.trace(ray).0 {
+            color = color + match self.trace(ray).0 {
                 Some(obj) => {
                     (*obj).recolor(&ray, self.raytrace(obj.transmit(&ray).unwrap(), camera_color, rays, depth - 1))
                 },
                 None => camera_color
             };
 
-            color.r += current_color.r;
-            color.g += current_color.g;
-            color.b += current_color.b;
-
             bounces += 1.0;
         }
 
-        color.r /= bounces;
-        color.g /= bounces;
-        color.b /= bounces;
+        color /= bounces;
 
         color
     }

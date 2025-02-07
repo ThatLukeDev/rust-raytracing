@@ -39,15 +39,9 @@ fn main() {
                 scene.camera.transform(Vec3::new(abs_x * aspect_ratio * fov_distance, abs_y * fov_distance, 1.0).unit())
             );
 
-            let camera_color = Color::new_emission(1.0, 1.0, 1.0, 1000.0);
+            let camera_color = Color::new_emission(0.9, 0.8, 1.0, 1000.0);
 
-            let mut result = scene.raytrace(camera_ray, camera_color, 1, 16);
-
-            result.r /= 1000.0;
-            result.g /= 1000.0;
-            result.b /= 1000.0;
-
-            img[x][y] = result;
+            img[x][y] = scene.raytrace(camera_ray, camera_color, 4, 16) * 0.001;
         }
     }
 
