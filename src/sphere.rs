@@ -76,7 +76,7 @@ impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output
 
         let direction = ray.direction - (normal * (normal * ray.direction) * T::from(2.0));
 
-        let random: Vec3<T> = Vec3::new(rng.gen_range(0.0..1.0).into(), rng.gen_range(0.0..1.0).into(), rng.gen_range(0.0..1.0).into());
+        let random: Vec3<T> = Vec3::new(rng.gen_range(-1.0..1.0).into(), rng.gen_range(-1.0..1.0).into(), rng.gen_range(-1.0..1.0).into());
 
         Some(Ray::new(pos, direction + random * <f64 as Into<T>>::into(self.roughness)))
     }
