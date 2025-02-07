@@ -14,8 +14,14 @@ use std::fs;
 fn main() {
     let scene = Scene::<f64> {
         objects: vec![
+            // Light
+            Box::new(Sphere::new(Vec3::new(2.0, 10.0, 2.0), 2.0, Color::new_emission(0.9, 0.9, 1.0, 10.0))),
+
+            // Ball
             Box::new(Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, Color::new(0.9, 0.1, 0.1))),
-            Box::new(Sphere::new(Vec3::new(0.0, -1000.0, 0.0), 1000.0, Color::new(0.2, 0.8, 0.1)))
+
+            // Ground
+            Box::new(Sphere::new(Vec3::new(0.0, -1000.0, 0.0), 1000.0, Color::new(0.2, 0.8, 0.1))),
         ],
 
         camera: Camera::new(Vec3::new(0.0, 2.0, -2.0), Vec3::new(-20.0, 0.0, 0.0))
@@ -39,9 +45,9 @@ fn main() {
                 scene.camera.transform(Vec3::new(abs_x * aspect_ratio * fov_distance, abs_y * fov_distance, 1.0).unit())
             );
 
-            let camera_color = Color::new_emission(0.9, 0.8, 1.0, 1000.0);
+            let camera_color = Color::new_emission(0.9, 0.8, 1.0, 500.0);
 
-            img[x][y] = scene.raytrace(camera_ray, camera_color, 4, 16) * 0.001;
+            img[x][y] = scene.raytrace(camera_ray, camera_color, 16, 4) * 0.001;
         }
     }
 

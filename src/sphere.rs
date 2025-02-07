@@ -1,3 +1,5 @@
+use rand::Rng;
+
 use crate::vector::Vec3;
 use crate::ray::Ray;
 use crate::raytrace::Raytrace;
@@ -19,13 +21,16 @@ pub struct Sphere<T> {
     radius: T,
 
     /// Colour of sphere.
-    color: Color
+    color: Color,
+
+    /// The uniformity of transmission.
+    roughness: f64,
 }
 
 impl<T> Sphere<T> {
     /// Default constructor.
     pub fn new(origin: Vec3<T>, radius: T, color: Color) -> Self {
-        Sphere::<T> { origin, radius, color }
+        Sphere::<T> { origin, radius, color, roughness: 1.0 }
     }
 
     /// Gives the normal to a point on the sphere.
@@ -63,10 +68,17 @@ impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output
 
     /// Reflects a ray along the normal.
     fn transmit(&self, ray: &Ray<T>) -> Option<Ray<T>> {
+        // Uses ThreadRng::Default() so is not re-seeded.
+        let mut rng = rand::thread_rng();
+
         let pos: Vec3<T> = self.intersects_at(ray)?;
         let normal: Vec3<T> = self.normal_at(&pos);
 
-        Some(Ray::new(pos, ray.direction - (normal * (normal * ray.direction) * T::from(2.0))))
+        let direction = ray.direction - (normal * (normal * ray.direction) * T::from(2.0));
+
+        let random: Vec3<T> = Vec3::new(rng.gen_range(0.0..1.0).into(), rng.gen_range(0.0..1.0).into(), rng.gen_range(0.0..1.0).into());
+
+        Some(Ray::new(pos, direction + random * <f64 as Into<T>>::into(self.roughness)))
     }
 
     fn recolor(&self, _ray: &Ray<T>, color: Color) -> Color {
