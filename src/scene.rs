@@ -1,7 +1,9 @@
 use crate::raytrace::*;
+use crate::vector::*;
 use crate::ray::*;
 use crate::camera::*;
 use crate::color::*;
+use crate::image::*;
 
 use std::ops::*;
 
@@ -21,7 +23,7 @@ pub struct Scene<T> {
     pub environment: Color,
 }
 
-impl<T: Copy + From<f64> + PartialOrd + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>> Scene<T> {
+impl<T: Copy + From<f64> + From<i32> + Into<f64> + PartialOrd + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>> Scene<T> {
     /// Raytracing.
     ///
     /// Traces a ray through the scene, deciding on whether it intersects,
@@ -48,28 +50,51 @@ impl<T: Copy + From<f64> + PartialOrd + Add<Output = T> + Sub<Output = T> + Mul<
         (closest_obj, lowest)
     }
 
-    /// Runs the trace function multiple times, and aggregates the corresponding colour.
-    pub fn raytrace(&self, ray: Ray<T>, rays: usize, depth: usize) -> Color {
+    /// Runs the trace function recurring.
+    pub fn trace_bounce(&self, ray: Ray<T>, depth: usize) -> Color {
         if depth == 0 {
             return Color::new(1.0, 1.0, 1.0);
         }
 
-        let mut color = Color::new(0.0, 0.0, 0.0);
-        let mut bounces = 0.0 as f64;
+        match self.trace(ray).0 {
+            Some(obj) => {
+                (*obj).recolor(&ray, self.trace_bounce(obj.transmit(&ray).unwrap(), depth - 1))
+            },
+            None => self.environment
+        }
+    }
 
-        for _i in 0..rays {
-            color = color + match self.trace(ray).0 {
-                Some(obj) => {
-                    (*obj).recolor(&ray, self.raytrace(obj.transmit(&ray).unwrap(), rays, depth - 1))
-                },
-                None => self.environment
-            };
+    /// Runs the trace_bounce function multiple times for each pixel.
+    pub fn raytrace<const WIDTH: usize, const HEIGHT: usize>(&self, rays: usize, depth: usize, fov: f64) -> Image<WIDTH, HEIGHT> {
+        let mut img: Image<WIDTH, HEIGHT> = Image::new();
 
-            bounces += 1.0;
+        let aspect_ratio = img.data.len() as f64 / img.data[0].len() as f64;
+        let fov_distance = (fov / 2.0).to_radians().tan();
+
+        for x in 0..img.data.len() {
+            for y in 0..img.data[x].len() {
+                let abs_x = 1.0 - (x as f64 / img.data.len() as f64) * 2.0;
+                let abs_y = 1.0 - (y as f64 / img.data[x].len() as f64) * 2.0;
+
+                let mut color = Color::new(0.0, 0.0, 0.0);
+                let mut bounces = 0.0 as f64;
+
+                for _i in 0..rays {
+                    let camera_ray = Ray::new(
+                        self.camera.position,
+                        self.camera.transform(Vec3::new((abs_x * aspect_ratio * fov_distance).into(), (abs_y * fov_distance).into(), (1.0).into()).unit())
+                    );
+
+                    color = color + self.trace_bounce(camera_ray, depth) * 0.001;
+                    bounces += 1.0;
+                }
+
+                color = color / bounces;
+
+                img[x][y] = color;
+            }
         }
 
-        color = color / bounces;
-
-        color
+        img
     }
 }

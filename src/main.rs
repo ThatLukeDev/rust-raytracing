@@ -1,9 +1,9 @@
 //! Raytracing in rust.
 
-use rusttracing::image::*;
+use std::time::Instant;
+
 use rusttracing::color::*;
 use rusttracing::vector::*;
-use rusttracing::ray::*;
 use rusttracing::scene::*;
 use rusttracing::camera::*;
 use rusttracing::sphere::*;
@@ -15,7 +15,7 @@ fn main() {
     let scene = Scene::<f64> {
         objects: vec![
             // Light
-            Box::new(Sphere::new(Vec3::new(2.0, 10.0, 2.0), 2.0, Color::new_emission(0.9, 0.9, 1.0, 10.0))),
+            Box::new(Sphere::new(Vec3::new(2.0, 10.0, 2.0), 2.0, Color::new_emission(0.9, 0.9, 1.0, 20.0))),
 
             // Ball
             Box::new(Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, Color::new(0.9, 0.1, 0.1))),
@@ -29,29 +29,14 @@ fn main() {
         camera: Camera::new(Vec3::new(0.0, 2.0, -2.0), Vec3::new(-20.0, 0.0, 0.0)),
     };
 
-    let mut img: Image<192, 108> = Image::new();
+    let start = Instant::now();
+    println!("Starting render");
 
-    let aspect_ratio = img.data.len() as f64 / img.data[0].len() as f64;
+    let img = scene.raytrace::<192, 108>(32, 8, 90.0);
 
-    let fov: f64 = 90.0;
-
-    let fov_distance = (fov / 2.0).to_radians().tan();
-
-    for x in 0..img.data.len() {
-        for y in 0..img.data[x].len() {
-            let abs_x = 1.0 - (x as f64 / img.data.len() as f64) * 2.0;
-            let abs_y = 1.0 - (y as f64 / img.data[x].len() as f64) * 2.0;
-
-            let camera_ray = Ray::new(
-                scene.camera.position,
-                scene.camera.transform(Vec3::new(abs_x * aspect_ratio * fov_distance, abs_y * fov_distance, 1.0).unit())
-            );
-
-            img[x][y] = scene.raytrace(camera_ray, 16, 4) * 0.001;
-        }
-    }
+    let time = start.elapsed();
+    println!("Rendering took {}ms", time.as_millis());
 
     let data = img.to_ppm();
-
     fs::write("image.ppm", data).unwrap();
 }

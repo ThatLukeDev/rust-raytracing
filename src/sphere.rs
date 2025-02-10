@@ -59,7 +59,7 @@ impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output
 
         let distance = (b * (-1.0).into() - discriminant.into().sqrt().into()) / (a * (2.0).into());
 
-        if distance < (0.0).into() {
+        if distance < (0.01).into() {
             return None;
         }
 
