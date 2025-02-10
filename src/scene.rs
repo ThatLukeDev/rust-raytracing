@@ -15,7 +15,10 @@ pub struct Scene<T> {
     pub objects: Vec<Box<dyn Raytrace<T>>>,
 
     /// The camera of the scene.
-    pub camera: Camera<T>
+    pub camera: Camera<T>,
+
+    /// The color of the environment
+    pub environment: Color,
 }
 
 impl<T: Copy + From<f64> + PartialOrd + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>> Scene<T> {
@@ -46,7 +49,7 @@ impl<T: Copy + From<f64> + PartialOrd + Add<Output = T> + Sub<Output = T> + Mul<
     }
 
     /// Runs the trace function multiple times, and aggregates the corresponding colour.
-    pub fn raytrace(&self, ray: Ray<T>, camera_color: Color, rays: usize, depth: usize) -> Color {
+    pub fn raytrace(&self, ray: Ray<T>, rays: usize, depth: usize) -> Color {
         if depth == 0 {
             return Color::new(1.0, 1.0, 1.0);
         }
@@ -57,9 +60,9 @@ impl<T: Copy + From<f64> + PartialOrd + Add<Output = T> + Sub<Output = T> + Mul<
         for _i in 0..rays {
             color = color + match self.trace(ray).0 {
                 Some(obj) => {
-                    (*obj).recolor(&ray, self.raytrace(obj.transmit(&ray).unwrap(), camera_color, rays, depth - 1))
+                    (*obj).recolor(&ray, self.raytrace(obj.transmit(&ray).unwrap(), rays, depth - 1))
                 },
-                None => camera_color
+                None => self.environment
             };
 
             bounces += 1.0;
