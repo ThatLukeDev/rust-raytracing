@@ -100,15 +100,15 @@ mod tests {
         #[test]
         fn intersects() {
             assert_eq!(
-                Sphere::new(Vec3::new(0.0, 2.0, 0.0), 1.0).intersects_at(&Ray::new(Vec3::new(0.0, 0.0, 0.0), Vec3::new(0.0, 1.0, 0.0))),
+                Sphere::new(Vec3::new(0.0, 2.0, 0.0), 1.0, Color::new(0.0, 0.0, 0.0)).intersects_at(&Ray::new(Vec3::new(0.0, 0.0, 0.0), Vec3::new(0.0, 1.0, 0.0))),
                 Some(Vec3::new(0.0, 1.0, 0.0))
             );
             assert_eq!(
-                Sphere::new(Vec3::new(6.0, 0.0, 8.0), 1.0).intersects_along(&Ray::new(Vec3::new(3.0, 0.0, 4.0), Vec3::new(3.0, 0.0, 4.0))),
+                Sphere::new(Vec3::new(6.0, 0.0, 8.0), 1.0, Color::new(0.0, 0.0, 0.0)).intersects_along(&Ray::new(Vec3::new(3.0, 0.0, 4.0), Vec3::new(3.0, 0.0, 4.0))),
                 Some(4.0)
             );
             assert_eq!(
-                Sphere::new(Vec3::new(6.0, 0.0, 8.0), 1.0).intersects_along(&Ray::new(Vec3::new(-3.0, 0.0, 4.0), Vec3::new(3.0, 0.0, 4.0))),
+                Sphere::new(Vec3::new(6.0, 0.0, 8.0), 1.0, Color::new(0.0, 0.0, 0.0)).intersects_along(&Ray::new(Vec3::new(-3.0, 0.0, 4.0), Vec3::new(3.0, 0.0, 4.0))),
                 None
             );
         }
@@ -116,15 +116,15 @@ mod tests {
         #[test]
         fn normal() {
             assert_eq!(
-                Sphere::new(Vec3::new(1.0, 2.0, 3.0), 1.0).normal_at(&Vec3::new(1.0, 3.0, 3.0)),
+                Sphere::new(Vec3::new(1.0, 2.0, 3.0), 1.0, Color::new(0.0, 0.0, 0.0)).normal_at(&Vec3::new(1.0, 3.0, 3.0)),
                 Vec3::new(0.0, 1.0, 0.0)
             );
             assert_eq!(
-                Sphere::new(Vec3::new(1.0, 2.0, 3.0), 1.0).normal_at(&Vec3::new(2.0, 2.0, 3.0)),
+                Sphere::new(Vec3::new(1.0, 2.0, 3.0), 1.0, Color::new(0.0, 0.0, 0.0)).normal_at(&Vec3::new(2.0, 2.0, 3.0)),
                 Vec3::new(1.0, 0.0, 0.0)
             );
             assert_eq!(
-                Sphere::new(Vec3::new(1.0, 2.0, 3.0), 1.0).normal_at(&Vec3::new(0.0, 2.0, 3.0)),
+                Sphere::new(Vec3::new(1.0, 2.0, 3.0), 1.0, Color::new(0.0, 0.0, 0.0)).normal_at(&Vec3::new(0.0, 2.0, 3.0)),
                 Vec3::new(-1.0, 0.0, 0.0)
             );
         }
