@@ -58,9 +58,9 @@ impl<T: Copy + Add + Sub + Mul + Div> Camera<T> {
     pub fn transform(&self, vec: Vec3<T>) -> Vec3<T>
     where T: Mul<Output = T> + Add<Output = T>, Matrix<T>: Mul<Output = Result<Matrix<T>, SizeMismatch>> {
         Vec3::new(
-            self.rotation[0][0] * vec.x + self.rotation[0][1] * vec.x + self.rotation[0][2] * vec.x,
-            self.rotation[1][0] * vec.y + self.rotation[1][1] * vec.y + self.rotation[1][2] * vec.y,
-            self.rotation[2][0] * vec.z + self.rotation[2][1] * vec.z + self.rotation[2][2] * vec.z,
+            self.rotation[0][0] * vec.x + self.rotation[0][1] * vec.y + self.rotation[0][2] * vec.z,
+            self.rotation[1][0] * vec.x + self.rotation[1][1] * vec.y + self.rotation[1][2] * vec.z,
+            self.rotation[2][0] * vec.x + self.rotation[2][1] * vec.y + self.rotation[2][2] * vec.z,
         )
     }
 }

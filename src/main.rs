@@ -32,7 +32,7 @@ fn main() {
     let start = Instant::now();
     println!("Starting render");
 
-    let img = scene.raytrace::<192, 108>(32, 8, 90.0);
+    let img = scene.raytrace::<192, 108>(256, 16, 90.0);
 
     let time = start.elapsed();
     println!("Rendering took {}ms", time.as_millis());
