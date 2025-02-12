@@ -9,14 +9,14 @@ use std::ops::*;
 /// WIDTH and HEIGHT must be constant at compile time.
 pub struct Image<const WIDTH: usize, const HEIGHT: usize> {
     /// 2D array of pixels.
-    pub data: [[Color; HEIGHT]; WIDTH]
+    pub data: Vec<Vec<Color>>
 }
 
 impl<const WIDTH: usize, const HEIGHT: usize> Image<WIDTH, HEIGHT> {
     /// Creates a new black image based on context.
     pub fn new() -> Self {
         Image::<WIDTH, HEIGHT> {
-            data: [[Color::new(0.0, 0.0, 0.0); HEIGHT]; WIDTH]
+            data: vec![vec![Color::new(0.0, 0.0, 0.0); HEIGHT]; WIDTH]
         }
     }
 
@@ -50,7 +50,7 @@ impl<const WIDTH: usize, const HEIGHT: usize> Image<WIDTH, HEIGHT> {
 }
 
 impl<const WIDTH: usize, const HEIGHT: usize> Index<usize> for Image<WIDTH, HEIGHT> {
-    type Output = [Color; HEIGHT];
+    type Output = Vec<Color>;
 
     /// Returns the inner array, which can then be indexed seperately.
     fn index<'a>(&'a self, i: usize) -> &'a Self::Output {
@@ -60,7 +60,7 @@ impl<const WIDTH: usize, const HEIGHT: usize> Index<usize> for Image<WIDTH, HEIG
 
 impl<const WIDTH: usize, const HEIGHT: usize> IndexMut<usize> for Image<WIDTH, HEIGHT> {
     /// Returns the inner array mutably, which can then be indexed seperately.
-    fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut [Color; HEIGHT] {
+    fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut Vec<Color> {
         &mut self.data[i]
     }
 }
