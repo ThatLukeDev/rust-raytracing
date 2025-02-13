@@ -68,7 +68,7 @@ impl<T: Copy + From<f64> + From<i32> + Into<f64> + PartialOrd + Add<Output = T> 
     }
 
     /// Runs the trace_bounce function multiple times for each pixel.
-    pub fn raytrace<const WIDTH: usize, const HEIGHT: usize>(&self, rays: usize, depth: usize, fov: f64) -> Image<WIDTH, HEIGHT>
+    pub fn raytrace<const WIDTH: usize, const HEIGHT: usize>(&self, rays: usize, depth: usize, fov: f64, transmit: Option<mpsc::Sender<(usize, Vec<Color>)>>) -> Image<WIDTH, HEIGHT>
     where T: Sync {
         let mut img: Image<WIDTH, HEIGHT> = Image::new();
 
@@ -79,6 +79,7 @@ impl<T: Copy + From<f64> + From<i32> + Into<f64> + PartialOrd + Add<Output = T> 
         thread::scope(|s| {
             for x in 0..WIDTH {
                 let tx_thread = tx.clone();
+                let transmit_thread = transmit.clone();
 
                 s.spawn(move || {
                     let mut batch = vec![Color::new(0.0, 0.0, 0.0); HEIGHT];
@@ -103,6 +104,11 @@ impl<T: Copy + From<f64> + From<i32> + Into<f64> + PartialOrd + Add<Output = T> 
                         color = color / bounces;
 
                         batch[y] = color;
+                    }
+
+                    match transmit_thread {
+                        Some(tx) => tx.send((x, batch.clone())).unwrap(),
+                        None => ()
                     }
 
                     tx_thread.send((x, batch)).unwrap();

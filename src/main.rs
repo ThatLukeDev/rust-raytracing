@@ -2,11 +2,15 @@
 
 use std::time::Instant;
 
+use std::thread;
+use std::sync::mpsc;
+
 use rusttracing::color::*;
 use rusttracing::vector::*;
 use rusttracing::scene::*;
 use rusttracing::camera::*;
 use rusttracing::sphere::*;
+use rusttracing::image::*;
 
 use std::fs;
 
@@ -29,10 +33,27 @@ fn main() {
         camera: Camera::new(Vec3::new(0.0, 2.0, -2.0), Vec3::new(-20.0, 0.0, 0.0)),
     };
 
+    const WIDTH: usize = 192;
+    const HEIGHT: usize = 108;
+    const SAMPLES: usize = 256;
+    const FOV: f64 = 90.0;
+
     let start = Instant::now();
     println!("Starting render");
 
-    let img = scene.raytrace::<192, 108>(256, 16, 90.0);
+    let mut img: Image<WIDTH, HEIGHT> = Image::new();
+    let mut counter = 0;
+    thread::scope(|s| {
+        let (tx, rx) = mpsc::channel();
+        s.spawn(|| {
+            img = scene.raytrace::<WIDTH, HEIGHT>(SAMPLES, 16, FOV, Some(tx));
+        });
+        for batch in rx {
+            counter += 1;
+
+            println!("{}% complete ({}/{})", counter * 100 / WIDTH, counter, WIDTH);
+        }
+    });
 
     let time = start.elapsed();
     println!("Rendering took {}ms", time.as_millis());
