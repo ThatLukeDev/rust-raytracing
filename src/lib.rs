@@ -20,6 +20,8 @@ pub mod sphere;
 pub mod camera;
 
 /// A scene, containing a list of objects, and configurations.
+///
+/// Supports raytracing of the scene, with async recieve.
 pub mod scene;
 
 /// A matrix, of any size, and utility functions.
