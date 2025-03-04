@@ -10,6 +10,7 @@ use rusttracing::vector::*;
 use rusttracing::scene::*;
 use rusttracing::camera::*;
 use rusttracing::sphere::*;
+use rusttracing::plane::*;
 use rusttracing::image::*;
 
 use std::fs;
@@ -18,17 +19,14 @@ use std::fs;
 fn main() {
     let scene = Scene::<f64> {
         objects: vec![
-            // Light
-            Box::new(Sphere::new(Vec3::new(2.0, 10.0, 2.0), 2.0, Color::new_emission(0.9, 0.9, 1.0, 20.0))),
-
             // Ball
             Box::new(Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, Color::new(0.9, 0.1, 0.1))),
 
             // Ground
-            Box::new(Sphere::new(Vec3::new(0.0, -1000.0, 0.0), 1000.0, Color::new(0.2, 0.8, 0.1))),
+            Box::new(Plane::new(Vec3::new(0.0, 1.0, 0.0), 0.0, Color::new(0.1, 0.9, 0.1))),
         ],
 
-        environment: Color::new_emission(0.9, 0.8, 1.0, 500.0),
+        environment: Color::new_emission(0.9, 0.8, 1.0, 1000.0),
 
         camera: Camera::new(Vec3::new(0.0, 2.0, -2.0), Vec3::new(-20.0, 0.0, 0.0)),
     };

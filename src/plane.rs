@@ -29,6 +29,13 @@ pub struct Plane<T> {
     pub roughness: f64,
 }
 
+impl<T> Plane<T> {
+    /// Default constructor.
+    pub fn new(normal: Vec3<T>, offset: T, color: Color) -> Plane<T> {
+        Plane::<T> { normal, offset, color, roughness: 1.0 }
+    }
+}
+
 impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output = T> + Div<Output = T> + Sub<Output = T>> Raytrace<T> for Plane<T> {
     fn intersects_along(&self, ray: &Ray<T>) -> Option<T> {
         todo!();
