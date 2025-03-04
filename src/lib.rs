@@ -16,6 +16,9 @@ pub mod raytrace;
 /// A sphere, with the Raytrace trait.
 pub mod sphere;
 
+/// A plane, with the Raytrace trait.
+pub mod plane;
+
 /// A camera, consisting of an origin and a rotation matrix.
 pub mod camera;
 

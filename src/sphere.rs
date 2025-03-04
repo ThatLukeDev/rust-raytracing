@@ -15,16 +15,16 @@ use std::ops::*;
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Sphere<T> {
     /// Origin, as a Vec3.
-    origin: Vec3<T>,
+    pub origin: Vec3<T>,
 
     /// Radius.
-    radius: T,
+    pub radius: T,
 
     /// Colour of sphere.
-    color: Color,
+    pub color: Color,
 
     /// The uniformity of transmission.
-    roughness: f64,
+    pub roughness: f64,
 }
 
 impl<T> Sphere<T> {
