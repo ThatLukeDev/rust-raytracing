@@ -38,7 +38,19 @@ impl<T> Plane<T> {
 
 impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output = T> + Div<Output = T> + Sub<Output = T>> Raytrace<T> for Plane<T> {
     fn intersects_along(&self, ray: &Ray<T>) -> Option<T> {
-        todo!();
+        let divisor = ray.direction * self.normal;
+
+        if divisor == 0.0.into() {
+            return None;
+        }
+
+        let distance = (self.offset - (ray.origin * self.normal)) / divisor;
+
+        if distance < (0.01).into() {
+            return None;
+        }
+
+        Some(distance)
     }
 
     fn transmit(&self, ray: &Ray<T>) -> Option<Ray<T>> {
@@ -47,6 +59,7 @@ impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output
 
         let pos: Vec3<T> = self.intersects_at(ray)?;
 
+        // negative normal cancels itself out in the next line
         let direction = ray.direction - (self.normal * (self.normal * ray.direction) * T::from(2.0));
 
         let random: Vec3<T> = Vec3::new(rng.gen_range(-1.0..1.0).into(), rng.gen_range(-1.0..1.0).into(), rng.gen_range(-1.0..1.0).into());
