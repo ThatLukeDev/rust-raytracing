@@ -23,6 +23,17 @@ impl<T> Vec3<T> {
     }
 }
 
+impl<T: Copy + Mul<Output = T> + Sub<Output = T>> Vec3<T> {
+    /// Returns the cross product of the two vectors.
+    pub fn cross(&self, other: &Vec3<T>) -> Vec3<T> {
+        Vec3::new(
+            self.y * other.z - other.y * self.z,
+            other.x * self.z - self.x * other.z,
+            self.x * other.y - other.x * self.y,
+        )
+    }
+}
+
 impl<T: From<f64> + Into<f64> + Add<Output = T>> Vec3<T> {
     /// Takes the vector, and returns a new vector
     /// where each part is rounded to a whole number.
@@ -204,6 +215,12 @@ mod tests {
         assert_eq!(Vec3::new(5,9,5) * Vec3::new(5,4,2), 71);
         assert_eq!(Vec3::new(7,8,5) * Vec3::new(3,3,3), 60);
         assert_eq!(Vec3::new(0,1,2) * Vec3::new(1,2,4), 10);
+    }
+
+    #[test]
+    fn cross() {
+        assert_eq!(Vec3::new(1,2,3).cross(&Vec3::new(3,4,5)), Vec3::new(-2,4,-2));
+        assert_eq!(Vec3::new(7,9,11).cross(&Vec3::new(1,2,4)), Vec3::new(14,-17,5));
     }
 
     #[test]
