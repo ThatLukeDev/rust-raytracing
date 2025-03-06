@@ -29,10 +29,19 @@ pub struct Plane<T> {
     pub roughness: f64,
 }
 
-impl<T> Plane<T> {
+impl<T: Copy + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output = T>> Plane<T> {
     /// Default constructor.
     pub fn new(normal: Vec3<T>, offset: T, color: Color) -> Plane<T> {
         Plane::<T> { normal, offset, color, roughness: 1.0 }
+    }
+
+    /// Constructor from 3 points.
+    pub fn from_points(p1: Vec3<T>, p2: Vec3<T>, p3: Vec3<T>, color: Color) -> Plane<T> where T: From<f64>, f64: From<T> {
+        // Forms normal from cross product between two plane direction vectors.
+        let normal: Vec3<T> = (p1 - p2).cross(&(p1 - p3)).unit();
+
+        // r.n = d
+        Plane::<T> { normal, offset: p1 * normal, color, roughness: 1.0 }
     }
 }
 
@@ -75,5 +84,40 @@ impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output
         out.b *= self.color.b;
 
         out
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn from_points() {
+        assert_eq!(
+            Plane::from_points(
+                Vec3::new(1.0, 0.0, 0.0),
+                Vec3::new(0.0, 0.0, 1.0),
+                Vec3::new(1.0, 0.0, 4.0),
+                Color::new(1.0, 1.0, 1.0)
+            ),
+            Plane::new(
+                Vec3::new(0.0, 1.0, 0.0),
+                0.0,
+                Color::new(1.0, 1.0, 1.0)
+            )
+        );
+        assert_eq!(
+            Plane::from_points(
+                Vec3::new(1.0, 2.0, 0.0),
+                Vec3::new(0.0, 2.0, 1.0),
+                Vec3::new(1.0, 2.0, 4.0),
+                Color::new(1.0, 1.0, 1.0)
+            ),
+            Plane::new(
+                Vec3::new(0.0, 1.0, 0.0),
+                2.0,
+                Color::new(1.0, 1.0, 1.0)
+            )
+        );
     }
 }
