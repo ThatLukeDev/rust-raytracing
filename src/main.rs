@@ -28,9 +28,9 @@ fn main() {
 
             // Mirror
             Box::new(Tri::new(
-                Vec3::new(2.0, 0.0, -5.0),
-                Vec3::new(2.0, 0.0, 5.0),
-                Vec3::new(2.0, 5.0, 5.0),
+                Vec3::new(-2.0, 0.0, -5.0),
+                Vec3::new(-2.0, 0.0, 5.0),
+                Vec3::new(-2.0, 5.0, 5.0),
                 Color::new(0.9, 0.9, 0.9),
                 0.01,
             )),
@@ -44,7 +44,7 @@ fn main() {
     const WIDTH: usize = 192;
     const HEIGHT: usize = 108;
     const SAMPLES: usize = 256;
-    const FOV: f64 = 90.0;
+    const FOV: f64 = 110.0;
 
     let start = Instant::now();
     println!("Starting render");

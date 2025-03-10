@@ -85,7 +85,7 @@ impl<T: Copy + From<f64> + From<i32> + Into<f64> + PartialOrd + Add<Output = T> 
                     let mut batch = vec![Color::new(0.0, 0.0, 0.0); HEIGHT];
 
                     for y in 0..HEIGHT {
-                        let abs_x = 1.0 - (x as f64 / WIDTH as f64) * 2.0;
+                        let abs_x = -(1.0 - (x as f64 / WIDTH as f64) * 2.0);
                         let abs_y = 1.0 - (y as f64 / HEIGHT as f64) * 2.0;
 
                         let mut color = Color::new(0.0, 0.0, 0.0);
