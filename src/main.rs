@@ -56,7 +56,7 @@ fn main() {
         s.spawn(|| {
             img = scene.raytrace::<WIDTH, HEIGHT>(SAMPLES, 16, FOV, Some(tx));
         });
-        for batch in rx {
+        for _batch in rx {
             counter += 1;
 
             println!("{}% complete ({}/{})", counter * 100 / WIDTH, counter, WIDTH);

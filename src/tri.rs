@@ -1,5 +1,3 @@
-use rand::Rng;
-
 use crate::vector::Vec3;
 use crate::ray::Ray;
 use crate::raytrace::Raytrace;
@@ -33,7 +31,28 @@ impl<T: Copy + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output 
 
 impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output = T> + Div<Output = T> + Sub<Output = T>> Raytrace<T> for Tri<T> {
     fn intersects_along(&self, ray: &Ray<T>) -> Option<T> {
-        todo!()
+        let len = self.plane.intersects_along(ray)?;
+        let pos = ray.at(len);
+
+        // The tri translated so that the intersection is the origin.
+        let triangle = Vec3::new(
+            self.bounds.x - pos,
+            self.bounds.y - pos,
+            self.bounds.z - pos,
+        );
+
+        // Saved as used twice.
+        let normal = triangle.x.cross(&triangle.y);
+
+        // Check normals are facing same direction (towards the origin).
+        if normal * (triangle.x.cross(&triangle.z)) < 0.0.into() {
+            return None;
+        }
+        if normal * (triangle.y.cross(&triangle.z)) < 0.0.into() {
+            return None;
+        }
+
+        Some(len)
     }
 
     fn transmit(&self, ray: &Ray<T>) -> Option<Ray<T>> {
