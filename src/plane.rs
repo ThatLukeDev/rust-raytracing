@@ -36,12 +36,12 @@ impl<T: Copy + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Div<Output 
     }
 
     /// Constructor from 3 points.
-    pub fn from_points(p1: Vec3<T>, p2: Vec3<T>, p3: Vec3<T>, color: Color) -> Plane<T> where T: From<f64>, f64: From<T> {
+    pub fn from_points(p1: Vec3<T>, p2: Vec3<T>, p3: Vec3<T>, color: Color, roughness: f64) -> Plane<T> where T: From<f64>, f64: From<T> {
         // Forms normal from cross product between two plane direction vectors.
         let normal: Vec3<T> = (p1 - p2).cross(&(p1 - p3)).unit();
 
         // r.n = d
-        Plane::<T> { normal, offset: p1 * normal, color, roughness: 1.0 }
+        Plane::<T> { normal, offset: p1 * normal, color, roughness }
     }
 }
 

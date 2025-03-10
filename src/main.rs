@@ -11,6 +11,7 @@ use rusttracing::scene::*;
 use rusttracing::camera::*;
 use rusttracing::sphere::*;
 use rusttracing::plane::*;
+use rusttracing::tri::*;
 use rusttracing::image::*;
 
 use std::fs;
@@ -24,6 +25,15 @@ fn main() {
 
             // Ground
             Box::new(Plane::new(Vec3::new(0.0, 1.0, 0.0), 0.0, Color::new(0.1, 0.9, 0.1))),
+
+            // Mirror
+            Box::new(Tri::new(
+                Vec3::new(0.0, 1.0, 1.0),
+                Vec3::new(-1.0, 2.0, 1.0),
+                Vec3::new(1.0, 2.0, 1.0),
+                Color::new(0.1, 0.9, 0.1),
+                0.5,
+            )),
         ],
 
         environment: Color::new_emission(0.9, 0.8, 1.0, 1000.0),
