@@ -42,13 +42,13 @@ impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output
         );
 
         // Saved as used twice.
-        let normal = triangle.x.cross(&triangle.y);
+        let normal = triangle.y.cross(&triangle.z);
 
         // Check normals are facing same direction (towards the origin).
-        if normal * (triangle.x.cross(&triangle.z)) < 0.0.into() {
+        if normal * (triangle.z.cross(&triangle.x)) < 0.0.into() {
             return None;
         }
-        if normal * (triangle.y.cross(&triangle.z)) < 0.0.into() {
+        if normal * (triangle.x.cross(&triangle.y)) < 0.0.into() {
             return None;
         }
 
