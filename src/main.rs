@@ -12,6 +12,7 @@ use rusttracing::camera::*;
 use rusttracing::sphere::*;
 use rusttracing::plane::*;
 use rusttracing::tri::*;
+use rusttracing::object::*;
 use rusttracing::image::*;
 
 use std::fs;
@@ -34,6 +35,13 @@ fn main() {
                 Color::new(0.9, 0.9, 0.9),
                 0.01,
             )),
+
+            // Head
+            /*
+            Box::new(Object::from_stl(
+                include_bytes!("head.stl")
+            )),
+            */
         ],
 
         environment: Color::new_emission(0.9, 0.8, 1.0, 1000.0),

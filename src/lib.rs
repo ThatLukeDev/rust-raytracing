@@ -22,6 +22,9 @@ pub mod plane;
 /// A triangle, storing a plane, with the Raytrace trait.
 pub mod tri;
 
+/// A collection of tris, which implement the Raytrace trait.
+pub mod object;
+
 /// A camera, consisting of an origin and a rotation matrix.
 pub mod camera;
 
