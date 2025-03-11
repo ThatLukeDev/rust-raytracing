@@ -15,9 +15,21 @@ pub struct Object<T> {
     tris: Vec<Tri<T>>
 }
 
+const HEADER_LEN: usize = 80;
+const PRECISION_LEN: usize = 4;
+const ATTR_LEN: usize = 2;
+
 impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output = T> + Div<Output = T> + Sub<Output = T>> Object<T> {
     pub fn from_stl(bytes: Vec<u8>) -> Self {
-        todo!()
+        // Do not allow ascii stl
+        assert_ne!(&bytes[0..5], "solid".as_bytes());
+
+        let length = u32::from_le_bytes(bytes[(HEADER_LEN)..(HEADER_LEN + PRECISION_LEN)].try_into().unwrap());
+
+        // Starts after header, which is of length 80, and after length, of length 4
+        let head = HEADER_LEN + PRECISION_LEN;
+
+        todo!();
     }
 }
 
