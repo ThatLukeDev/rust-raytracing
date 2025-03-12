@@ -1,9 +1,11 @@
+use crate::vector::Vec3;
 use crate::ray::Ray;
 use crate::raytrace::Raytrace;
 use crate::color::Color;
 use crate::tri::Tri;
 
 use std::ops::*;
+use std::fmt;
 
 /// An object.
 ///
@@ -15,21 +17,70 @@ pub struct Object<T> {
     tris: Vec<Tri<T>>
 }
 
+#[derive(Clone, Copy, Debug)]
+/// Unsupported stl type.
+pub struct UnsupportedError;
+impl fmt::Display for UnsupportedError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Unsupported stl version, please use binary stl")
+    }
+}
+
 const HEADER_LEN: usize = 80;
 const PRECISION_LEN: usize = 4;
 const ATTR_LEN: usize = 2;
 
 impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output = T> + Div<Output = T> + Sub<Output = T>> Object<T> {
-    pub fn from_stl(bytes: Vec<u8>) -> Self {
+    /// Creates a blank object.
+    pub fn new() -> Self {
+        Object::<_> { tris: vec![] }
+    }
+
+    fn vec3_from_f32(slice: &[u8]) -> Vec3<T> {
+        let x = f32::from_le_bytes(slice[(PRECISION_LEN*0)..(PRECISION_LEN*1)].try_into().unwrap()) as f64;
+        let y = f32::from_le_bytes(slice[(PRECISION_LEN*1)..(PRECISION_LEN*2)].try_into().unwrap()) as f64;
+        let z = f32::from_le_bytes(slice[(PRECISION_LEN*2)..(PRECISION_LEN*3)].try_into().unwrap()) as f64;
+
+        Vec3::new(x.into(), y.into(), z.into())
+    }
+
+    /// Creates a new object from a byte array, in the stl format.
+    ///
+    /// # Errors
+    /// Will error when used with ascii stl (old, outdated version).
+    pub fn from_stl(bytes: Vec<u8>, color: Color, roughness: f64) -> Result<Self, UnsupportedError> where f64: From<T> {
         // Do not allow ascii stl
-        assert_ne!(&bytes[0..5], "solid".as_bytes());
+        if &bytes[0..5] == "solid".as_bytes() {
+            return Err(UnsupportedError);
+        }
 
         let length = u32::from_le_bytes(bytes[(HEADER_LEN)..(HEADER_LEN + PRECISION_LEN)].try_into().unwrap());
 
         // Starts after header, which is of length 80, and after length, of length 4
-        let head = HEADER_LEN + PRECISION_LEN;
+        let mut head = HEADER_LEN + PRECISION_LEN;
 
-        todo!();
+        let mut out = Self::new();
+
+        for _i in 0..length {
+            let _normal = Self::vec3_from_f32(&bytes[(head)..(head + PRECISION_LEN * 3)]).unit();
+            head += PRECISION_LEN * 3;
+
+            let p1 = Self::vec3_from_f32(&bytes[(head)..(head + PRECISION_LEN * 3)]).unit();
+            head += PRECISION_LEN * 3;
+
+            let p2 = Self::vec3_from_f32(&bytes[(head)..(head + PRECISION_LEN * 3)]).unit();
+            head += PRECISION_LEN * 3;
+
+            let p3 = Self::vec3_from_f32(&bytes[(head)..(head + PRECISION_LEN * 3)]).unit();
+            head += PRECISION_LEN * 3;
+
+            out.tris.push(
+                Tri::new(p1, p2, p3, color, roughness)
+            );
+            head += ATTR_LEN;
+        }
+
+        Ok(out)
     }
 }
 

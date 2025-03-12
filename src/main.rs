@@ -37,9 +37,13 @@ fn main() {
             )),
 
             // Head
-            Box::new(Object::from_stl(
-                include_bytes!("../head.stl").to_vec()
-            )),
+            Box::new(
+                Object::from_stl(
+                    include_bytes!("../head.stl").to_vec(),
+                    Color::new(0.9, 0.9, 0.9),
+                    0.5,
+                ).unwrap()
+            ),
         ],
 
         environment: Color::new_emission(0.9, 0.8, 1.0, 1000.0),

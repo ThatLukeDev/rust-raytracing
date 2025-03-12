@@ -98,7 +98,8 @@ mod tests {
                 Vec3::new(1.0, 0.0, 0.0),
                 Vec3::new(0.0, 0.0, 1.0),
                 Vec3::new(1.0, 0.0, 4.0),
-                Color::new(1.0, 1.0, 1.0)
+                Color::new(1.0, 1.0, 1.0),
+                1.0
             ),
             Plane::new(
                 Vec3::new(0.0, 1.0, 0.0),
@@ -111,7 +112,8 @@ mod tests {
                 Vec3::new(1.0, 2.0, 0.0),
                 Vec3::new(0.0, 2.0, 1.0),
                 Vec3::new(1.0, 2.0, 4.0),
-                Color::new(1.0, 1.0, 1.0)
+                Color::new(1.0, 1.0, 1.0),
+                1.0
             ),
             Plane::new(
                 Vec3::new(0.0, 1.0, 0.0),
