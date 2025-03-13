@@ -83,11 +83,15 @@ impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output
         Ok(out)
     }
 
-    pub fn translate(mut self, offset: Vec3<T>) -> Self {
+    pub fn translate(mut self, offset: Vec3<T>) -> Self where f64: From<T> {
         for i in 0..self.tris.len() {
-            self.tris[i].bounds.x = self.tris[i].bounds.x + offset;
-            self.tris[i].bounds.y = self.tris[i].bounds.y + offset;
-            self.tris[i].bounds.z = self.tris[i].bounds.z + offset;
+            self.tris[i] = Tri::new(
+                self.tris[i].bounds.x + offset,
+                self.tris[i].bounds.y + offset,
+                self.tris[i].bounds.z + offset,
+                self.tris[i].plane.color,
+                self.tris[i].plane.roughness,
+            );
         }
 
         self
