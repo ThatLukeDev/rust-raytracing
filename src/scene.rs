@@ -91,13 +91,20 @@ impl<T: Copy + From<f64> + From<i32> + Into<f64> + PartialOrd + Add<Output = T> 
                         let mut color = Color::new(0.0, 0.0, 0.0);
                         let mut bounces = 0.0 as f64;
 
-                        for _i in 0..rays {
-                            let camera_ray = Ray::new(
-                                self.camera.position,
-                                self.camera.transform(Vec3::new((abs_x * aspect_ratio * fov_distance).into(), (abs_y * fov_distance).into(), (1.0).into()).unit())
-                            );
+                        let camera_ray = Ray::new(
+                            self.camera.position,
+                            self.camera.transform(Vec3::new((abs_x * aspect_ratio * fov_distance).into(), (abs_y * fov_distance).into(), (1.0).into()).unit())
+                        );
 
-                            color = color + self.trace_bounce(camera_ray, depth) * 0.001;
+                        let cache_obj = self.trace(camera_ray).0;
+
+                        for _i in 0..rays {
+                            color = color + match cache_obj {
+                                Some(obj) => {
+                                    (*obj).recolor(&camera_ray, self.trace_bounce(obj.transmit(&camera_ray).unwrap(), depth - 1))
+                                },
+                                None => self.environment
+                            } * 0.001;
                             bounces += 1.0;
                         }
 
