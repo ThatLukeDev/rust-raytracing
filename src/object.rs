@@ -84,19 +84,23 @@ impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output
     }
 
     /// Returns a box, with center at origin.
-    pub fn new_box(origin: Vec3<T>, size: Vec3<T>, color: Color, roughness: f64) -> Self where f64: From<T> {
-        todo!();
+    pub fn new_box(origin: Vec3<T>, size: Vec3<T>, color: Color, roughness: f64) -> Self where T: Neg<Output = T>, f64: From<T> {
+        let size = size * <_ as Into<T>>::into(0.5);
 
         Object::<_> {
             tris: vec![
-                // 12 repeats
-                Tri::new(
-                    origin + Vec3::new(size.x, size.y, size.z),
-                    origin + Vec3::new(size.x, size.y, size.z),
-                    origin + Vec3::new(size.x, size.y, size.z),
-                    color,
-                    roughness,
-                ),
+                Tri::new(origin + Vec3::new(-size.x, -size.y, -size.z), origin + Vec3::new(-size.x, size.y, -size.z), origin + Vec3::new(size.x, size.y, -size.z), color, roughness),
+                Tri::new(origin + Vec3::new(-size.x, -size.y, -size.z), origin + Vec3::new(size.x, -size.y, -size.z), origin + Vec3::new(size.x, size.y, -size.z), color, roughness),
+                Tri::new(origin + Vec3::new(-size.x, -size.y, size.z), origin + Vec3::new(-size.x, size.y, size.z), origin + Vec3::new(size.x, size.y, size.z), color, roughness),
+                Tri::new(origin + Vec3::new(-size.x, -size.y, size.z), origin + Vec3::new(size.x, -size.y, size.z), origin + Vec3::new(size.x, size.y, size.z), color, roughness),
+                Tri::new(origin + Vec3::new(size.x, -size.y, size.z), origin + Vec3::new(size.x, -size.y, -size.z), origin + Vec3::new(size.x, size.y, -size.z), color, roughness),
+                Tri::new(origin + Vec3::new(size.x, -size.y, size.z), origin + Vec3::new(size.x, size.y, size.z), origin + Vec3::new(size.x, size.y, -size.z), color, roughness),
+                Tri::new(origin + Vec3::new(-size.x, -size.y, size.z), origin + Vec3::new(-size.x, -size.y, -size.z), origin + Vec3::new(-size.x, size.y, -size.z), color, roughness),
+                Tri::new(origin + Vec3::new(-size.x, -size.y, size.z), origin + Vec3::new(-size.x, size.y, size.z), origin + Vec3::new(-size.x, size.y, -size.z), color, roughness),
+                Tri::new(origin + Vec3::new(size.x, -size.y, size.z), origin + Vec3::new(-size.x, -size.y, size.z), origin + Vec3::new(size.x, -size.y, -size.z), color, roughness),
+                Tri::new(origin + Vec3::new(-size.x, -size.y, -size.z), origin + Vec3::new(-size.x, -size.y, size.z), origin + Vec3::new(size.x, -size.y, -size.z), color, roughness),
+                Tri::new(origin + Vec3::new(size.x, size.y, size.z), origin + Vec3::new(-size.x, size.y, size.z), origin + Vec3::new(size.x, size.y, -size.z), color, roughness),
+                Tri::new(origin + Vec3::new(-size.x, size.y, -size.z), origin + Vec3::new(-size.x, size.y, size.z), origin + Vec3::new(size.x, size.y, -size.z), color, roughness),
             ]
         }
     }

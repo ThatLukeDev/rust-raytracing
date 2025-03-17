@@ -24,6 +24,10 @@ fn main() {
             // Ground
             Box::new(Plane::new(Vec3::new(0.0, 1.0, 0.0), 0.0, Color::new(0.1, 0.9, 0.1))),
 
+            // Cube
+            Box::new(Object::new_box(Vec3::new(2.0, 2.0, 0.0), Vec3::new(1.0, 1.0, 1.0), Color::new(0.9, 0.1, 0.9), 1.0)),
+
+            // Sphere
             Box::new(Sphere::<_> {
                 origin: Vec3::new(0.0, 1.0, -1.0),
                 radius: 1.0,
@@ -38,7 +42,6 @@ fn main() {
                     Color::new(0.9, 0.2, 0.2),
                     1.0,
                 ).unwrap()
-                    .calibrate()
                     .translate(Vec3::new(0.0, 1.0, 1.0))
             ),
 
