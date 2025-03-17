@@ -38,6 +38,7 @@ fn main() {
                     Color::new(0.9, 0.2, 0.2),
                     1.0,
                 ).unwrap()
+                    .calibrate()
                     .translate(Vec3::new(0.0, 1.0, 1.0))
             ),
 

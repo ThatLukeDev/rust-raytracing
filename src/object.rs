@@ -83,8 +83,64 @@ impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output
         Ok(out)
     }
 
+    /// Returns a box, with center at origin.
+    pub fn new_box(origin: Vec3<T>, size: Vec3<T>, color: Color, roughness: f64) -> Self where f64: From<T> {
+        todo!();
+
+        Object::<_> {
+            tris: vec![
+                // 12 repeats
+                Tri::new(
+                    origin + Vec3::new(size.x, size.y, size.z),
+                    origin + Vec3::new(size.x, size.y, size.z),
+                    origin + Vec3::new(size.x, size.y, size.z),
+                    color,
+                    roughness,
+                ),
+            ]
+        }
+    }
+
+    /// Returns the bounding box of the object.
+    pub fn bounds(&self) -> (Vec3<T>, Vec3<T>) {
+        let mut min: Vec3<T> = Vec3::new(<_ as Into<T>>::into(1000000.0), <_ as Into<T>>::into(1000000.0), <_ as Into<T>>::into(1000000.0));
+        let mut max: Vec3<T> = Vec3::new(<_ as Into<T>>::into(-1000000.0), <_ as Into<T>>::into(-1000000.0), <_ as Into<T>>::into(-1000000.0));
+
+        for tri in &self.tris {
+            for i in 0..3 {
+                let point = match i {
+                    0 => tri.bounds.x,
+                    1 => tri.bounds.y,
+                    _ => tri.bounds.z,
+                };
+
+                if point.x < min.x {
+                    min.x = point.x;
+                }
+                if point.y < min.y {
+                    min.y = point.y;
+                }
+                if point.z < min.z {
+                    min.z = point.z;
+                }
+
+                if point.x > max.x {
+                    max.x = point.x;
+                }
+                if point.y > max.y {
+                    max.y = point.y;
+                }
+                if point.z > max.z {
+                    max.z = point.z;
+                }
+            }
+        }
+
+        (min, max)
+    }
+
     /// Recenters an object and scales it such that it is 1 unit high on its largest axis.
-    pub fn calibrate(mut self) {
+    pub fn calibrate(mut self) -> Self {
         todo!()
     }
 
