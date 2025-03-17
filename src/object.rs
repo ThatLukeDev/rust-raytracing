@@ -83,6 +83,12 @@ impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output
         Ok(out)
     }
 
+    /// Recenters an object and scales it such that it is 1 unit high on its largest axis.
+    pub fn calibrate(mut self) {
+        todo!()
+    }
+
+    /// Moves all tris in an object by a set vector.
     pub fn translate(mut self, offset: Vec3<T>) -> Self where f64: From<T> {
         for i in 0..self.tris.len() {
             self.tris[i] = Tri::new(

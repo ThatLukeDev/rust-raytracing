@@ -9,6 +9,7 @@ use rusttracing::color::*;
 use rusttracing::vector::*;
 use rusttracing::scene::*;
 use rusttracing::camera::*;
+use rusttracing::sphere::*;
 use rusttracing::plane::*;
 use rusttracing::tri::*;
 use rusttracing::object::*;
@@ -20,6 +21,16 @@ use std::fs;
 fn main() {
     let scene = Scene::<f64> {
         objects: vec![
+            // Ground
+            Box::new(Plane::new(Vec3::new(0.0, 1.0, 0.0), 0.0, Color::new(0.1, 0.9, 0.1))),
+
+            Box::new(Sphere::<_> {
+                origin: Vec3::new(0.0, 1.0, -1.0),
+                radius: 1.0,
+                color: Color::new(0.2, 0.2, 0.9),
+                roughness: 0.2,
+            }),
+
             // Head
             Box::new(
                 Object::from_stl(
@@ -27,11 +38,8 @@ fn main() {
                     Color::new(0.9, 0.2, 0.2),
                     1.0,
                 ).unwrap()
-                    .translate(Vec3::new(0.0, 1.0, 0.0))
+                    .translate(Vec3::new(0.0, 1.0, 1.0))
             ),
-
-            // Ground
-            Box::new(Plane::new(Vec3::new(0.0, 1.0, 0.0), 0.0, Color::new(0.1, 0.9, 0.1))),
 
             // Mirror
             Box::new(Tri::new(
@@ -41,11 +49,18 @@ fn main() {
                 Color::new(0.9, 0.9, 0.9),
                 0.01,
             )),
+            Box::new(Tri::new(
+                Vec3::new(-2.0, 5.0, -5.0),
+                Vec3::new(-2.0, 0.0, -5.0),
+                Vec3::new(-2.0, 5.0, 5.0),
+                Color::new(0.9, 0.9, 0.9),
+                0.01,
+            )),
         ],
 
         environment: Color::new_emission(0.9, 0.8, 1.0, 1000.0),
 
-        camera: Camera::new(Vec3::new(0.0, 2.0, -2.0), Vec3::new(-20.0, 0.0, 0.0)),
+        camera: Camera::new(Vec3::new(2.0, 4.0, -2.0), Vec3::new(-45.0, -45.0, 0.0)),
     };
 
     const WIDTH: usize = 192;
