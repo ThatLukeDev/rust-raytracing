@@ -7,9 +7,9 @@ use crate::tri::Tri;
 use std::ops::*;
 use std::fmt;
 
-macro_rules! offset_point_tri {
-    ($pos: ident, $size: ident, $col: ident, $noise: ident, $t: ty, $p1: expr, $p2: expr, $p3: expr, $p4: expr, $p5: expr, $p6: expr, $p7: expr, $p8: expr, $p9: expr) => {
-        Tri::new($pos + Vec3::new(<_ as Into<$t>>::into($p1) * $size.x, <_ as Into<$t>>::into($p2) * $size.y, <_ as Into<$t>>::into($p3) * $size.z), $pos + Vec3::new(<_ as Into<$t>>::into($p4) * $size.x, <_ as Into<$t>>::into($p5) * $size.y, <_ as Into<$t>>::into($p6) * $size.z), $pos + Vec3::new(<_ as Into<$t>>::into($p7) * $size.x, <_ as Into<$t>>::into($p8) * $size.y, <_ as Into<$t>>::into($p9) * $size.z), $col, $noise)
+macro_rules! offset_point_tri_helix {
+    ( $pos: ident, $size: ident, $col: ident, $noise: ident, $t: ty, $( $p1: expr, $p2: expr, $p3: expr, $p4: expr, $p5: expr, $p6: expr, $p7: expr, $p8: expr, $p9: expr );+ ) => {
+        vec![ $( Tri::new($pos + Vec3::new(<_ as Into<$t>>::into($p1) * $size.x, <_ as Into<$t>>::into($p2) * $size.y, <_ as Into<$t>>::into($p3) * $size.z), $pos + Vec3::new(<_ as Into<$t>>::into($p4) * $size.x, <_ as Into<$t>>::into($p5) * $size.y, <_ as Into<$t>>::into($p6) * $size.z), $pos + Vec3::new(<_ as Into<$t>>::into($p7) * $size.x, <_ as Into<$t>>::into($p8) * $size.y, <_ as Into<$t>>::into($p9) * $size.z), $col, $noise) ),+ ]
     }
 }
 
@@ -94,20 +94,20 @@ impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output
         let size = size * <_ as Into<T>>::into(0.5);
 
         Object::<_> {
-            tris: vec![
-                offset_point_tri!(origin, size, color, roughness, T, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0),
-                offset_point_tri!(origin, size, color, roughness, T, -1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0),
-                offset_point_tri!(origin, size, color, roughness, T, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, 1.0),
-                offset_point_tri!(origin, size, color, roughness, T, -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0),
-                offset_point_tri!(origin, size, color, roughness, T, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0),
-                offset_point_tri!(origin, size, color, roughness, T, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0),
-                offset_point_tri!(origin, size, color, roughness, T, -1.0, -1.0, 1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0),
-                offset_point_tri!(origin, size, color, roughness, T, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0),
-                offset_point_tri!(origin, size, color, roughness, T, 1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, -1.0),
-                offset_point_tri!(origin, size, color, roughness, T, -1.0, -1.0, -1.0, -1.0, -1.0, 1.0, 1.0, -1.0, -1.0),
-                offset_point_tri!(origin, size, color, roughness, T, 1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0),
-                offset_point_tri!(origin, size, color, roughness, T, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0),
-            ]
+            tris: offset_point_tri_helix!(origin, size, color, roughness, T,
+                -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0;
+                -1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0;
+                -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, 1.0;
+                -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0;
+                1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0;
+                1.0, -1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0;
+                -1.0, -1.0, 1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0;
+                -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0;
+                1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, -1.0;
+                -1.0, -1.0, -1.0, -1.0, -1.0, 1.0, 1.0, -1.0, -1.0;
+                1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0;
+                -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0
+            )
         }
     }
 
