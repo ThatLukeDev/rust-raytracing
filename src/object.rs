@@ -1,5 +1,6 @@
 use crate::vector::Vec3;
 use crate::ray::Ray;
+use crate::matrix::Matrix;
 use crate::raytrace::Raytrace;
 use crate::color::Color;
 use crate::tri::Tri;
@@ -10,6 +11,16 @@ use std::fmt;
 macro_rules! offset_point_tri_helix {
     ( $pos: ident, $size: ident, $col: ident, $noise: ident, $t: ty, $( $p1: expr, $p2: expr, $p3: expr, $p4: expr, $p5: expr, $p6: expr, $p7: expr, $p8: expr, $p9: expr );+ ) => {
         vec![ $( Tri::new($pos + Vec3::new(<_ as Into<$t>>::into($p1) * $size.x, <_ as Into<$t>>::into($p2) * $size.y, <_ as Into<$t>>::into($p3) * $size.z), $pos + Vec3::new(<_ as Into<$t>>::into($p4) * $size.x, <_ as Into<$t>>::into($p5) * $size.y, <_ as Into<$t>>::into($p6) * $size.z), $pos + Vec3::new(<_ as Into<$t>>::into($p7) * $size.x, <_ as Into<$t>>::into($p8) * $size.y, <_ as Into<$t>>::into($p9) * $size.z), $col, $noise) ),+ ]
+    }
+}
+
+macro_rules! fast_transform {
+    ($vec: expr, $mat: expr) => {
+        Vec3::new(
+            $mat[0][0] * $vec.x + $mat[0][1] * $vec.y + $mat[0][2] * $vec.z,
+            $mat[1][0] * $vec.x + $mat[1][1] * $vec.y + $mat[1][2] * $vec.z,
+            $mat[2][0] * $vec.x + $mat[2][1] * $vec.y + $mat[2][2] * $vec.z,
+        )
     }
 }
 
@@ -150,8 +161,38 @@ impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output
     }
 
     /// Recenters an object and scales it such that it is 1 unit high on its largest axis.
-    pub fn calibrate(mut self) -> Self {
-        todo!()
+    pub fn unit(mut self) -> Self where f64: From<T>, T: From<i32> + std::cmp::PartialOrd + Neg<Output = T> {
+        let bounds = self.bounds();
+
+        let negative_centre = (bounds.0 + bounds.1) * <_ as Into<T>>::into(-0.5);
+
+        self = self.translate(negative_centre);
+
+        let mut lengths = bounds.1 - bounds.0;
+
+        let zero: T = <_ as Into<T>>::into(0.0);
+
+        if lengths.x < zero {
+            lengths.x = -lengths.x;
+        }
+        if lengths.y < zero {
+            lengths.y = -lengths.y;
+        }
+        if lengths.z < zero {
+            lengths.z = -lengths.z;
+        }
+
+        let mut length = lengths.x;
+        if lengths.y > length {
+            length = lengths.y;
+        }
+        if lengths.z > length {
+            length = lengths.z;
+        }
+
+        self = self.scale(Vec3::new(<_ as Into<T>>::into(1.0) / length, <_ as Into<T>>::into(1.0) / length, <_ as Into<T>>::into(1.0) / length));
+
+        self
     }
 
     /// Moves all tris in an object by a set vector.
@@ -165,6 +206,33 @@ impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output
                 self.tris[i].plane.roughness,
             );
         }
+
+        self
+    }
+
+    /// Transforms the object with a Matrix transformation.
+    pub fn transform(mut self, mat: Matrix<T>) -> Self where f64: From<T> {
+        for i in 0..self.tris.len() {
+            self.tris[i] = Tri::new(
+                fast_transform!(self.tris[i].bounds.x, mat),
+                fast_transform!(self.tris[i].bounds.y, mat),
+                fast_transform!(self.tris[i].bounds.z, mat),
+                self.tris[i].plane.color,
+                self.tris[i].plane.roughness,
+            );
+        }
+
+        self
+    }
+
+    /// Scale all tris in an object by a set vector from the origin.
+    pub fn scale(mut self, factor: Vec3<T>) -> Self where f64: From<T>, T: From<i32> {
+        let mut mat = Matrix::ident(3);
+        mat[0][0] = factor.x;
+        mat[1][1] = factor.y;
+        mat[2][2] = factor.z;
+
+        self = self.transform(mat);
 
         self
     }
