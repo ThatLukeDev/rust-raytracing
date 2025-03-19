@@ -39,10 +39,11 @@ fn main() {
             Box::new(
                 Object::from_stl(
                     include_bytes!("../head.stl").to_vec(),
-                    Color::new(0.9, 0.2, 0.2),
+                    Color::new(0.9, 0.9, 0.9),
                     1.0,
                 ).unwrap()
                     .unit()
+                    .rotate(Vec3::new(0.0, 90.0, 0.0))
                     .translate(Vec3::new(0.0, 1.0, 1.0))
             ),
 
@@ -68,9 +69,9 @@ fn main() {
         camera: Camera::new(Vec3::new(2.0, 4.0, -2.0), Vec3::new(-45.0, -45.0, 0.0)),
     };
 
-    const WIDTH: usize = 192;
-    const HEIGHT: usize = 108;
-    const SAMPLES: usize = 256;
+    const WIDTH: usize = 1920;
+    const HEIGHT: usize = 1080;
+    const SAMPLES: usize = 4;
     const FOV: f64 = 110.0;
 
     let start = Instant::now();

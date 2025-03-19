@@ -271,6 +271,15 @@ impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output
 
         self
     }
+
+    /// Rotates an object by a rotation vector.
+    pub fn rotate(mut self, rot: Vec3<T>) -> Self where f64: From<T>, T: From<i32> + Neg<Output = T> {
+        let mat = <Vec3<T> as Into<Matrix<T>>>::into(rot);
+
+        self = self.transform(mat);
+
+        self
+    }
 }
 
 impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output = T> + Div<Output = T> + Sub<Output = T>> Object<T> {
