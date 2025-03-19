@@ -14,6 +14,25 @@ macro_rules! offset_point_tri_helix {
     }
 }
 
+macro_rules! offset_point_tri_cube {
+    ( $pos: ident, $size: ident, $col: ident, $noise: ident, $t: ty ) => {
+        offset_point_tri_helix!($pos, $size, $col, $noise, $t,
+            -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0;
+            -1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0;
+            -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, 1.0;
+            -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0;
+            1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0;
+            1.0, -1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0;
+            -1.0, -1.0, 1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0;
+            -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0;
+            1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, -1.0;
+            -1.0, -1.0, -1.0, -1.0, -1.0, 1.0, 1.0, -1.0, -1.0;
+            1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0;
+            -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0
+        )
+    }
+}
+
 macro_rules! fast_transform {
     ($vec: expr, $mat: expr) => {
         Vec3::new(
@@ -31,7 +50,16 @@ macro_rules! fast_transform {
 /// and treated as one single object.
 pub struct Object<T> {
     /// The vec of triangles.
-    tris: Vec<Tri<T>>
+    pub tris: Vec<Tri<T>>,
+
+    /// Cache for the bounding box of the object.
+    ///
+    /// # Errors
+    ///
+    /// Bounds cache must be recalculated or cleared upon mutating the object through a non built-in method:
+    /// `obj.recalculate_bounds()`
+    /// `obj.bounds_cache = None` (SLOW)
+    pub bounds_cache: Option<Vec<Tri<T>>>
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -50,7 +78,20 @@ const ATTR_LEN: usize = 2;
 impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output = T> + Div<Output = T> + Sub<Output = T>> Object<T> {
     /// Creates a blank object.
     pub fn new() -> Self {
-        Object::<_> { tris: vec![] }
+        Object::<_> { tris: vec![], bounds_cache: None }
+    }
+
+    /// Recalculates the bounds of the object.
+    fn recalculate_bounds(&mut self) {
+        let bounds = self.bounds();
+
+        let centre = (bounds.0 + bounds.1) * <_ as Into<T>>::into(0.5);
+        let size = bounds.1 - bounds.0;
+
+        let col = Color::new(0.0, 0.0, 0.0);
+        let noi = 0.0;
+
+        self.bounds = Some(offset_point_tri_cube!(centre, size, col, noi, T));
     }
 
     fn vec3_from_f32(slice: &[u8]) -> Vec3<T> {
@@ -97,6 +138,8 @@ impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output
             head += ATTR_LEN;
         }
 
+        out.recalculate_bounds();
+
         Ok(out)
     }
 
@@ -105,20 +148,8 @@ impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output
         let size = size * <_ as Into<T>>::into(0.5);
 
         Object::<_> {
-            tris: offset_point_tri_helix!(origin, size, color, roughness, T,
-                -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0;
-                -1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0;
-                -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, 1.0;
-                -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0;
-                1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0;
-                1.0, -1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0;
-                -1.0, -1.0, 1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0;
-                -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0;
-                1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, -1.0;
-                -1.0, -1.0, -1.0, -1.0, -1.0, 1.0, 1.0, -1.0, -1.0;
-                1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0;
-                -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0
-            )
+            tris: offset_point_tri_cube!(origin, size, color, roughness, T),
+            bounds_cache: None
         }
     }
 
@@ -207,6 +238,8 @@ impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output
             );
         }
 
+        self.recalculate_bounds();
+
         self
     }
 
@@ -221,6 +254,8 @@ impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output
                 self.tris[i].plane.roughness,
             );
         }
+
+        self.recalculate_bounds();
 
         self
     }
@@ -240,6 +275,7 @@ impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output
 
 impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output = T> + Div<Output = T> + Sub<Output = T>> Object<T> {
     fn intersects(&self, ray: &Ray<T>) -> (Option<&Tri<T>>, T) {
+
         let mut lowest: T = 9999999999.0.into();
         let mut closest_tri = None;
 

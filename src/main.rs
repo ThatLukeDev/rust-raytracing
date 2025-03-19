@@ -38,7 +38,7 @@ fn main() {
             // Head
             Box::new(
                 Object::from_stl(
-                    include_bytes!("../cube.stl").to_vec(),
+                    include_bytes!("../head.stl").to_vec(),
                     Color::new(0.9, 0.2, 0.2),
                     1.0,
                 ).unwrap()
