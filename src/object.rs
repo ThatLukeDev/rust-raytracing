@@ -82,7 +82,7 @@ impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output
     }
 
     /// Recalculates the bounds of the object.
-    fn recalculate_bounds(&mut self) {
+    fn recalculate_bounds(&mut self) where f64: From<T> {
         let bounds = self.bounds();
 
         let centre = (bounds.0 + bounds.1) * <_ as Into<T>>::into(0.5);
@@ -91,7 +91,7 @@ impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output
         let col = Color::new(0.0, 0.0, 0.0);
         let noi = 0.0;
 
-        self.bounds = Some(offset_point_tri_cube!(centre, size, col, noi, T));
+        self.bounds_cache = Some(offset_point_tri_cube!(centre, size, col, noi, T));
     }
 
     fn vec3_from_f32(slice: &[u8]) -> Vec3<T> {
@@ -275,6 +275,21 @@ impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output
 
 impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output = T> + Div<Output = T> + Sub<Output = T>> Object<T> {
     fn intersects(&self, ray: &Ray<T>) -> (Option<&Tri<T>>, T) {
+        match &self.bounds_cache {
+            Some(bound) => {
+                let mut within_bounds = false;
+                for tri in bound {
+                    if tri.intersects_along(&ray).is_some() {
+                        within_bounds = true;
+                        break;
+                    }
+                }
+                if !within_bounds {
+                    return (None, <_ as Into<T>>::into(0.0));
+                }
+            },
+            None => ()
+        }
 
         let mut lowest: T = 9999999999.0.into();
         let mut closest_tri = None;
