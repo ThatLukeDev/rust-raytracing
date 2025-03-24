@@ -24,8 +24,16 @@ fn main() {
             // Ground
             Box::new(Plane::new(Vec3::new(0.0, 1.0, 0.0), 0.0, Color::new(0.1, 0.9, 0.1))),
 
+            // Light
+            Box::new(Sphere::<_> {
+                origin: Vec3::new(-1.0, 16.0, 1.0),
+                radius: 2.0,
+                color: Color::new_emission(0.2, 0.2, 0.9, 100.0),
+                roughness: 0.2,
+            }),
+
             // Cube
-            Box::new(Object::new_box(Vec3::new(2.0, 2.0, 0.0), Vec3::new(1.0, 1.0, 1.0), Color::new(0.9, 0.1, 0.9), 1.0)),
+            Box::new(Object::new_box(Vec3::new(2.0, 1.0, 0.0), Vec3::new(1.0, 1.0, 1.0), Color::new(0.9, 0.1, 0.9), 1.0)),
 
             // Sphere
             Box::new(Sphere::<_> {
@@ -43,8 +51,8 @@ fn main() {
                     1.0,
                 ).unwrap()
                     .unit()
-                    .rotate(Vec3::new(0.0, 90.0, 0.0))
-                    .translate(Vec3::new(0.0, 1.0, 1.0))
+                    .rotate(Vec3::new(-90.0, 0.0, 180.0))
+                    .translate(Vec3::new(0.0, 3.0, 1.0))
             ),
 
             // Mirror
@@ -69,9 +77,9 @@ fn main() {
         camera: Camera::new(Vec3::new(2.0, 4.0, -2.0), Vec3::new(-45.0, -45.0, 0.0)),
     };
 
-    const WIDTH: usize = 1920;
-    const HEIGHT: usize = 1080;
-    const SAMPLES: usize = 4;
+    const WIDTH: usize = 192*2;
+    const HEIGHT: usize = 108*2;
+    const SAMPLES: usize = 256;
     const FOV: f64 = 110.0;
 
     let start = Instant::now();
