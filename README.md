@@ -6,5 +6,4 @@ The rustdoc can be found [here](http://htmlpreview.github.io/?https://github.com
 
 ---
 
-![Render](https://github.com/user-attachments/assets/c94a87fe-5292-4702-9c2a-6bb16eb23af5
-)
+![Render](https://github.com/user-attachments/assets/b4223890-1f50-4881-972d-de84579bb909)
