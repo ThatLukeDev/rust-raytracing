@@ -123,13 +123,13 @@ impl<T: PartialOrd + From<f64> + Into<f64> + Copy + Add<Output = T> + Mul<Output
             let _normal = Self::vec3_from_f32(&bytes[(head)..(head + PRECISION_LEN * 3)]).unit();
             head += PRECISION_LEN * 3;
 
-            let p1 = Self::vec3_from_f32(&bytes[(head)..(head + PRECISION_LEN * 3)]).unit();
+            let p1 = Self::vec3_from_f32(&bytes[(head)..(head + PRECISION_LEN * 3)]);
             head += PRECISION_LEN * 3;
 
-            let p2 = Self::vec3_from_f32(&bytes[(head)..(head + PRECISION_LEN * 3)]).unit();
+            let p2 = Self::vec3_from_f32(&bytes[(head)..(head + PRECISION_LEN * 3)]);
             head += PRECISION_LEN * 3;
 
-            let p3 = Self::vec3_from_f32(&bytes[(head)..(head + PRECISION_LEN * 3)]).unit();
+            let p3 = Self::vec3_from_f32(&bytes[(head)..(head + PRECISION_LEN * 3)]);
             head += PRECISION_LEN * 3;
 
             out.tris.push(
