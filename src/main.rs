@@ -46,13 +46,27 @@ fn main() {
             // Head
             Box::new(
                 Object::from_stl(
-                    include_bytes!("../head.stl").to_vec(),
+                    include_bytes!("../assets/head.stl").to_vec(),
                     Color::new(0.9, 0.9, 0.9),
                     1.0,
                 ).unwrap()
                     .unit()
+                    .scale(Vec3::new(2.0, 2.0, 2.0))
                     .rotate(Vec3::new(-90.0, 0.0, 180.0))
                     .translate(Vec3::new(0.0, 3.0, 1.0))
+            ),
+
+            // Name
+            Box::new(
+                Object::from_stl(
+                    include_bytes!("../assets/name.stl").to_vec(),
+                    Color::new(0.2, 0.8, 0.9),
+                    1.0,
+                ).unwrap()
+                    .unit()
+                    .scale(Vec3::new(2.0, 2.0, 2.0))
+                    .rotate(Vec3::new(180.0, 180.0, 180.0))
+                    .translate(Vec3::new(2.0, 3.0, 1.0))
             ),
 
             // Mirror
@@ -79,7 +93,7 @@ fn main() {
 
     const WIDTH: usize = 192*2;
     const HEIGHT: usize = 108*2;
-    const SAMPLES: usize = 256;
+    const SAMPLES: usize = 16;
     const FOV: f64 = 110.0;
 
     let start = Instant::now();
